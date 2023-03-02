@@ -1,8 +1,8 @@
 <?php
 
-namespace Didslm\FileUploadWrapper\checker;
+namespace Didslm\FileUpload\check;
 
-interface Checker
+interface Check
 {
     public function isPassed(array $fileData): bool;
 }

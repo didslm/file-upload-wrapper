@@ -1,8 +1,8 @@
 <?php
 
-namespace Didslm\FileUploadWrapper\service;
+namespace Didslm\FileUpload\service;
 
-use Didslm\FileUploadWrapper\types\TypeInterface;
+use Didslm\FileUpload\type\TypeInterface;
 
 class RequestFileType
 {

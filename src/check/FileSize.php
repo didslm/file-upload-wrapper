@@ -1,10 +1,10 @@
 <?php
 
-namespace Didslm\FileUploadWrapper\checker;
+namespace Didslm\FileUpload\check;
 
-use Didslm\FileUploadWrapper\Size;
+use Didslm\FileUpload\Size;
 
-class FileSize implements Checker
+class FileSize implements Check
 {
     public function __construct(private int $size, private ?int $type = Size::MB){}
 

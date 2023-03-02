@@ -1,17 +1,17 @@
 <?php
 
-namespace Didslm\FileUploadWrapper\Tests\unit;
+namespace Didslm\FileUpload\Tests\unit;
 
-use Didslm\FileUploadWrapper\checker\CheckUploadException;
-use Didslm\FileUploadWrapper\checker\FileSize;
-use Didslm\FileUploadWrapper\exception\FileUploadException;
-use Didslm\FileUploadWrapper\exception\MissingFileException;
-use Didslm\FileUploadWrapper\File;
-use Didslm\FileUploadWrapper\checker\FileType;
-use Didslm\FileUploadWrapper\Size;
-use Didslm\FileUploadWrapper\Tests\unit\entity\Product;
-use Didslm\FileUploadWrapper\Tests\unit\entity\Profile;
-use Didslm\FileUploadWrapper\Type;
+use Didslm\FileUpload\check\CheckUploadException;
+use Didslm\FileUpload\check\FileSize;
+use Didslm\FileUpload\exception\FileUploadException;
+use Didslm\FileUpload\exception\MissingFileException;
+use Didslm\FileUpload\File;
+use Didslm\FileUpload\check\FileType;
+use Didslm\FileUpload\Size;
+use Didslm\FileUpload\Tests\unit\entity\Product;
+use Didslm\FileUpload\Tests\unit\entity\Profile;
+use Didslm\FileUpload\Type;
 use PHPUnit\Framework\TestCase;
 
 class FileUploadTest extends TestCase

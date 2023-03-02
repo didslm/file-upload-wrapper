@@ -1,6 +1,6 @@
 <?php
 
-namespace Didslm\FileUploadWrapper\exception;
+namespace Didslm\FileUpload\exception;
 
 abstract class FileUploadException extends \Exception
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Didslm\FileUploadWrapper\types;
+namespace Didslm\FileUpload\type;
 
 interface TypeInterface
 {

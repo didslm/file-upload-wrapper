@@ -1,12 +1,12 @@
 <?php
 
-namespace Didslm\FileUploadWrapper;
+namespace Didslm\FileUpload;
 
-use Didslm\FileUploadWrapper\checker\CheckUploadException;
-use Didslm\FileUploadWrapper\checker\FileType;
-use Didslm\FileUploadWrapper\checker\checker;
-use Didslm\FileUploadWrapper\exception\MissingFileException;
-use Didslm\FileUploadWrapper\service\TypeAttributesCollection;
+use Didslm\FileUpload\check\CheckUploadException;
+use Didslm\FileUpload\check\FileType;
+use Didslm\FileUpload\check\Check;
+use Didslm\FileUpload\exception\MissingFileException;
+use Didslm\FileUpload\service\TypeAttributesCollection;
 
 final class File
 {
@@ -63,7 +63,7 @@ final class File
         }
     }
 
-    private function validate(checker... $checkers): void
+    private function validate(Check... $checkers): void
     {
         foreach ($checkers as $check) {
             if (!$check->isPassed($this->uploadedFileData)) {

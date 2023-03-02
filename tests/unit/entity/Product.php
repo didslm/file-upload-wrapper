@@ -1,8 +1,8 @@
 <?php
 
-namespace Didslm\FileUploadWrapper\Tests\unit\entity;
+namespace Didslm\FileUpload\Tests\unit\entity;
 
-use Didslm\FileUploadWrapper\types\Image;
+use Didslm\FileUpload\type\Image;
 
 class Product
 {

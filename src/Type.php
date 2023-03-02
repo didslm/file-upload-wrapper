@@ -1,6 +1,6 @@
 <?php
 
-namespace Didslm\FileUploadWrapper;
+namespace Didslm\FileUpload;
 
 class Type
 {

@@ -1,8 +1,8 @@
 <?php
 
-namespace Didslm\FileUploadWrapper\checker;
+namespace Didslm\FileUpload\check;
 
-class FileType implements Checker
+class FileType implements Check
 {
     const CHECKER_NAME = 'File Type';
 

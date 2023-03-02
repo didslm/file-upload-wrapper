@@ -1,11 +1,11 @@
 {
-    "name": "didslm/file-upload-wrapper",
+    "name": "didslm/file-upload",
     "description": "This wrapper makes file uploading easier to use",
     "type": "library",
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "Didslm\\FileUploadWrapper\\": "src/"
+            "Didslm\\FileUpload\\": "src/"
         }
     },
     "require": {
@@ -13,7 +13,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Didslm\\FileUploadWrapper\\Tests\\": "tests/"
+            "Didslm\\FileUpload\\Tests\\": "tests/"
         }
     },
     "authors": [
