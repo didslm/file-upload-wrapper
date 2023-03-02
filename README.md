@@ -9,7 +9,7 @@ Example:
 class Product {
     //...
     #[Image(requestField: "request_field", dir: "/public")]
-    private string $image;
+    public string $image;
     
     public function getImageFilename(): string
     {
@@ -26,7 +26,7 @@ class ProductCreationController {
         $product = new Product();
         
         File::upload($product, [
-                new FileType([FileType::JPEG]),
+                new FileType([Type::JPEG]),
                 new FileSize(2, Size::MB)
         ]); 
         // some other stuff
@@ -34,3 +34,8 @@ class ProductCreationController {
     }
 }
 ```
+
+> Keep in mind the field in your entity must be public.
+
+-----
+Keep in touch with me on [Twitter](https://twitter.com/slmdiar) or [LinkedIn](https://www.linkedin.com/in/diarselimi)
