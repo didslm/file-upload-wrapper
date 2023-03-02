@@ -10,10 +10,10 @@ class FileSize implements Check
 
     public function isPassed(array $fileData): bool
     {
-        $fileSize = $fileData['size'];
-        $limitSize = $this->size * Size::ALL[$this->type];
+        $fileSizeInBytes = $fileData['size'];
+        $limitSize = Size::ALL[$this->type] * $this->size;
 
-        if ($fileSize > $limitSize) {
+        if ($fileSizeInBytes > $limitSize) {
             throw new CheckUploadException(sprintf('File size is too big. Limit is %s %s.', $this->size, 'MB'));
         }
 

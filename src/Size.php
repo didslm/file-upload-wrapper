@@ -8,8 +8,8 @@ class Size
     public const MB = 2;
 
     public const ALL = [
-        self::KB => 1,
-        self::MB => 1024,
+        self::KB => 1000,
+        self::MB => 1000000,
     ];
 
 }

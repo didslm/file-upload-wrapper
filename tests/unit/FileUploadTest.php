@@ -116,7 +116,7 @@ class FileUploadTest extends TestCase
             'type' => 'image/jpeg',
             'tmp_name' => '/tmp/test'.$string.'.jpg',
             'error' => 0,
-            'size' => 1024*3
+            'size' => 1000000 * 3 // 3 MB
         ];
 
         exec('"test" > /tmp/test'.$string.'.jpg');
