@@ -10,7 +10,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Didslm\\FileUploadWrapper\\tests\\": "tests/"
+            "Didslm\\FileUploadWrapper\\Tests\\": "tests/"
         }
     },
     "authors": [

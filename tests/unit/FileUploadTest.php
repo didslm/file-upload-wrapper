@@ -5,7 +5,7 @@ namespace Didslm\FileUploadWrapper\Tests\unit;
 use Didslm\FileUploadWrapper\exception\MissingFileException;
 use Didslm\FileUploadWrapper\File;
 use Didslm\FileUploadWrapper\checker\FileType;
-use Didslm\FileUploadWrapper\tests\unit\entity\Product;
+use Didslm\FileUploadWrapper\Tests\unit\entity\Product;
 use Didslm\FileUploadWrapper\Tests\unit\entity\Profile;
 use Didslm\FileUploadWrapper\Type;
 use PHPUnit\Framework\TestCase;
