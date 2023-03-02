@@ -5,6 +5,7 @@ namespace Didslm\FileUploadWrapper;
 use Didslm\FileUploadWrapper\checker\CheckException;
 use Didslm\FileUploadWrapper\checker\FileType;
 use Didslm\FileUploadWrapper\checker\checker;
+use Didslm\FileUploadWrapper\exception\MissingFileException;
 use Didslm\FileUploadWrapper\service\TypeAttributesCollection;
 
 final class File
@@ -20,6 +21,11 @@ final class File
     public static function upload(object &$obj, ?array $checkers = []): void
     {
         $typesCollection = TypeAttributesCollection::createFromObject($obj);
+
+        if ($typesCollection->missingRequiredFile()) {
+            throw new MissingFileException();
+        }
+
         $uploadedFile = $_FILES[$typesCollection->getType()->getRequestField()];
 
         $file = new self(
