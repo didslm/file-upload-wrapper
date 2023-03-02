@@ -8,6 +8,9 @@
             "Didslm\\FileUploadWrapper\\": "src/"
         }
     },
+    "require": {
+        "php": ">=8.0"
+    },
     "autoload-dev": {
         "psr-4": {
             "Didslm\\FileUploadWrapper\\Tests\\": "tests/"
