@@ -4,15 +4,10 @@ namespace Didslm\FileUploadWrapper\checker;
 
 class CheckException extends \Exception
 {
-    public function __construct(private Checker $checker, string $actualType)
+    public function __construct(string $message)
     {
         parent::__construct();
-        $this->message = "File type {$actualType} is not allowed.";
-    }
-
-    public function getFailedCheck(): Checker
-    {
-        return $this->checker;
+        $this->message = $message;
     }
 
     public function __toString(): string

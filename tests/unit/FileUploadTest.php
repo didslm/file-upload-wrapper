@@ -2,9 +2,12 @@
 
 namespace Didslm\FileUploadWrapper\Tests\unit;
 
+use Didslm\FileUploadWrapper\checker\CheckException;
+use Didslm\FileUploadWrapper\checker\FileSize;
 use Didslm\FileUploadWrapper\exception\MissingFileException;
 use Didslm\FileUploadWrapper\File;
 use Didslm\FileUploadWrapper\checker\FileType;
+use Didslm\FileUploadWrapper\Size;
 use Didslm\FileUploadWrapper\Tests\unit\entity\Product;
 use Didslm\FileUploadWrapper\Tests\unit\entity\Profile;
 use Didslm\FileUploadWrapper\Type;
@@ -37,7 +40,8 @@ class FileUploadTest extends TestCase
         $product = new Product();
 
         File::upload($product, [
-            new FileType([Type::JPEG])
+            new FileType([Type::JPEG]),
+            new FileSize(4, Size::MB)
         ]);
 
         $fileDir = $_SERVER['DOCUMENT_ROOT'] . '/public/images/';
@@ -72,6 +76,21 @@ class FileUploadTest extends TestCase
         self::assertFileExists($_SERVER['DOCUMENT_ROOT'] . '/public/images/' . $profile->getImage2Filename());
     }
 
+    public function testShouldFailToUploadBiggerFileSize()
+    {
+        $this->uploadFile('article_image');
+
+        $product = new Product();
+
+        $this->expectException(CheckException::class);
+        $this->expectExceptionMessage('File size is too big. Limit is 2 MB.');
+
+        File::upload($product, [
+            new FileType([Type::JPEG]),
+            new FileSize(2, Size::MB)
+        ]);
+    }
+
     private function uploadFile(string $string)
     {
         $_FILES[$string] = [
@@ -79,7 +98,7 @@ class FileUploadTest extends TestCase
             'type' => 'image/jpeg',
             'tmp_name' => '/tmp/test'.$string.'.jpg',
             'error' => 0,
-            'size' => 123456
+            'size' => 1024*3
         ];
 
         exec('"test" > /tmp/test'.$string.'.jpg');
