@@ -2,43 +2,78 @@
 
 namespace Didslm\FileUploadWrapper;
 
-use Didslm\FileUploadWrapper\service\FileName;
-use Didslm\FileUploadWrapper\service\TypeExtractorService;
+use Didslm\FileUploadWrapper\checker\CheckException;
+use Didslm\FileUploadWrapper\checker\FileType;
+use Didslm\FileUploadWrapper\checker\checker;
+use Didslm\FileUploadWrapper\service\TypeAttributesCollection;
 
-class File
+final class File
 {
-    public static function upload(object &$obj, ?array $filters = []): void
+    private const DEFAULT_FILE_PREFIX = 'file_';
+    private string $generatedName;
+
+    protected function __construct(
+        readonly string $uploadDir,
+        readonly array $uploadedFileData
+    ){}
+
+    public static function upload(object &$obj, ?array $checkers = []): void
     {
-        $fileTypes = (new TypeExtractorService($obj))->getTypes();
+        $typesCollection = TypeAttributesCollection::createFromObject($obj);
+        $uploadedFile = $_FILES[$typesCollection->getType()->getRequestField()];
 
-        $property = array_key_last($fileTypes);
-        $fileType = array_pop($fileTypes);
+        $file = new self(
+            $_SERVER['DOCUMENT_ROOT'] .'/'. trim($typesCollection->getType()->getDir(), '/') . '/',
+            $uploadedFile
+        );
 
+        $file->validate(...$checkers);
 
-        $firstFile = $_FILES[$fileType->getRequestField()];
-        $dir = trim($fileType->getDir(), '/');
-        $uploadDir = dirname(__DIR__,1) .'/'.$dir . '/';
-
-        if (!is_dir($uploadDir)) {
-            mkdir($uploadDir, 0777, true);
+        if ($file->uploadDirExists() === false) {
+            $file->createDir();
         }
 
-        foreach ($filters as $filter) {
-            if (!$filter->checkFile($firstFile)) {
-                throw new \Exception('File type is not allowed');
-            }
-        }
+        $file->saveFile();
 
-        $fieldName = $firstFile['tmp_name'];
+        $obj->{$typesCollection->getProperty()} = $file->getGeneratedName();
+    }
 
-
-        $newFileName = FileName::getUniqueName($firstFile['type']);
-        $r = copy($fieldName, $uploadDir.basename($newFileName));
+    private function saveFile(): void
+    {
+        $r = copy($this->uploadedFileData['tmp_name'], $this->uploadDir . $this->generateName());
         if (!$r) {
             throw new \Exception('File upload failed');
         }
-        unlink($fieldName);
+        unlink($this->uploadedFileData['tmp_name']);
+    }
 
-        $obj->$property = $dir.'/'.$newFileName;
+    private function createDir(): void
+    {
+        if (!is_dir($this->uploadDir)) {
+            mkdir($this->uploadDir, 0777, true);
+        }
+    }
+
+    private function validate(checker... $checkers): void
+    {
+        foreach ($checkers as $check) {
+            if (!$check->isPassed($this->uploadedFileData)) {
+                throw new CheckException($check, $this->uploadedFileData['type']);
+            }
+        }
+    }
+
+    private function getGeneratedName(): string
+    {
+        return $this->generatedName ?? $this->generateName();
+    }
+    private function generateName(): string
+    {
+        return $this->generatedName = md5(uniqid(self::DEFAULT_FILE_PREFIX, true)).'.'.FileType::TYPES[$this->uploadedFileData['type']];
+    }
+
+    private function uploadDirExists(): bool
+    {
+        return is_dir($this->uploadDir);
     }
 }

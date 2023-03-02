@@ -7,7 +7,7 @@ use Didslm\FileUploadWrapper\types\Image;
 class Product
 {
 
-    #[Image(requestField: "article_image", dir: "/images")]
+    #[Image(requestField: "article_image", dir: "/public/images")]
     public string $image;
 
     public function getImageFilename(): string

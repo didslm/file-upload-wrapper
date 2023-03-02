@@ -3,7 +3,8 @@
 namespace Didslm\FileUploadWrapper\Tests\unit;
 
 use Didslm\FileUploadWrapper\File;
-use Didslm\FileUploadWrapper\filters\FileType;
+use Didslm\FileUploadWrapper\checker\FileType;
+use Didslm\FileUploadWrapper\checker\checker;
 use Didslm\FileUploadWrapper\tests\unit\entity\Product;
 use PHPUnit\Framework\TestCase;
 
@@ -12,8 +13,7 @@ class FileUploadTest extends TestCase
     public function testShouldUploadJpegFileSuccessfully()
     {
 
-        //get root dir
-        $rootDir = dirname(__DIR__, 2);
+        $rootDir = $_SERVER['DOCUMENT_ROOT'] = dirname(__DIR__, 2);
 
         $product = new Product();
 
@@ -30,12 +30,13 @@ class FileUploadTest extends TestCase
 
 
         File::upload($product, [
-            new FileType([FileType::JPEG])
+            new FileType([Checker::JPEG])
         ]);
 
+        $fileDir = $rootDir . '/public/images/';
 
-        self::assertFileExists($product->getImageFilename());
-        exec('rm -r '.dirname($product->getImageFilename()));
-        self::assertFileDoesNotExist($product->getImageFilename());
+        self::assertFileExists($fileDir . $product->getImageFilename());
+        exec('rm -r '.dirname($fileDir . $product->getImageFilename()));
+        self::assertFileDoesNotExist($fileDir. $product->getImageFilename());
     }
 }
