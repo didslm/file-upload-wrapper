@@ -2,7 +2,7 @@
 
 namespace Didslm\FileUploadWrapper;
 
-use Didslm\FileUploadWrapper\checker\CheckException;
+use Didslm\FileUploadWrapper\checker\CheckUploadException;
 use Didslm\FileUploadWrapper\checker\FileType;
 use Didslm\FileUploadWrapper\checker\checker;
 use Didslm\FileUploadWrapper\exception\MissingFileException;
@@ -67,7 +67,7 @@ final class File
     {
         foreach ($checkers as $check) {
             if (!$check->isPassed($this->uploadedFileData)) {
-                throw new CheckException($check, $this->uploadedFileData['type']);
+                throw new CheckUploadException($check, $this->uploadedFileData['type']);
             }
         }
     }

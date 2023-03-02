@@ -2,8 +2,9 @@
 
 namespace Didslm\FileUploadWrapper\Tests\unit;
 
-use Didslm\FileUploadWrapper\checker\CheckException;
+use Didslm\FileUploadWrapper\checker\CheckUploadException;
 use Didslm\FileUploadWrapper\checker\FileSize;
+use Didslm\FileUploadWrapper\exception\FileUploadException;
 use Didslm\FileUploadWrapper\exception\MissingFileException;
 use Didslm\FileUploadWrapper\File;
 use Didslm\FileUploadWrapper\checker\FileType;
@@ -82,13 +83,30 @@ class FileUploadTest extends TestCase
 
         $product = new Product();
 
-        $this->expectException(CheckException::class);
+        $this->expectException(CheckUploadException::class);
         $this->expectExceptionMessage('File size is too big. Limit is 2 MB.');
 
         File::upload($product, [
             new FileType([Type::JPEG]),
             new FileSize(2, Size::MB)
         ]);
+    }
+
+    public function testExceptionHandling()
+    {
+        $this->uploadFile('article_image');
+
+        $product = new Product();
+
+        try {
+            File::upload($product, [
+                new FileType([Type::PNG]),
+                new FileSize(2, Size::MB)
+            ]);
+        } catch (FileUploadException $e) {
+            //this will tell us that we can catch the exception
+            self::assertTrue(true);
+        }
     }
 
     private function uploadFile(string $string)

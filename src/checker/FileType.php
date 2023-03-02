@@ -13,7 +13,7 @@ class FileType implements Checker
         $fileType = $fileData['type'];
 
         if (!in_array($fileType, $this->acceptedTypes, true)) {
-            throw new CheckException(sprintf('File type is not allowed. Allowed types are %s.', implode(', ', $this->acceptedTypes)));
+            throw new CheckUploadException(sprintf('File type is not allowed. Allowed types are %s.', implode(', ', $this->acceptedTypes)));
         }
 
         return true;

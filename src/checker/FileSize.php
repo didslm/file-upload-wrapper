@@ -14,7 +14,7 @@ class FileSize implements Checker
         $limitSize = $this->size * Size::ALL[$this->type];
 
         if ($fileSize > $limitSize) {
-            throw new CheckException(sprintf('File size is too big. Limit is %s %s.', $this->size, 'MB'));
+            throw new CheckUploadException(sprintf('File size is too big. Limit is %s %s.', $this->size, 'MB'));
         }
 
         return true;
