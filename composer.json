@@ -1,0 +1,28 @@
+{
+    "name": "didslm/file-upload-wrapper",
+    "description": "This wrapper makes file uploading easier to use",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Didslm\\FileUploadWrapper\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Didslm\\FileUploadWrapper\\tests\\": "tests/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Diar",
+            "email": "diarselimi92+github@gmail.com"
+        }
+    ],
+    "scripts": {
+        "test": "vendor/bin/phpunit tests/unit",
+    },
+    "require-dev": {
+        "phpunit/phpunit": "@dev"
+    }
+}
