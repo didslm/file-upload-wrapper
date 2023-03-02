@@ -3,7 +3,6 @@
 namespace Didslm\FileUpload;
 
 use Didslm\FileUpload\check\CheckUploadException;
-use Didslm\FileUpload\check\FileType;
 use Didslm\FileUpload\check\Check;
 use Didslm\FileUpload\exception\MissingFileException;
 use Didslm\FileUpload\service\TypeAttributesCollection;

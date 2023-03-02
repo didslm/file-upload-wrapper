@@ -11,6 +11,7 @@ use Didslm\FileUpload\check\FileType;
 use Didslm\FileUpload\Size;
 use Didslm\FileUpload\Tests\unit\entity\Product;
 use Didslm\FileUpload\Tests\unit\entity\Profile;
+use Didslm\FileUpload\Tests\unit\entity\Social;
 use Didslm\FileUpload\Type;
 use PHPUnit\Framework\TestCase;
 
@@ -109,6 +110,25 @@ class FileUploadTest extends TestCase
         }
     }
 
+    public function testShouldHandleMultipleFilesFromSameField()
+    {
+        $this->uploadFiles('image');
+
+        $social = new Social();
+
+        File::upload($social, [
+            new FileType([Type::JPEG]),
+            new FileSize(4, Size::MB)
+        ]);
+
+        $fileDir = $_SERVER['DOCUMENT_ROOT'] . '/public/images/';
+
+        [$image, $image2] = $social->getImages();
+
+        self::assertFileExists($fileDir . $image);
+        self::assertFileExists($fileDir . $image2);
+    }
+
     private function uploadFile(string $string)
     {
         $_FILES[$string] = [
@@ -121,5 +141,39 @@ class FileUploadTest extends TestCase
 
         exec('"test" > /tmp/test'.$string.'.jpg');
 
+    }
+
+    private function uploadFiles(string $string)
+    {
+        $_FILES[$string] = [
+            'image' => [
+                'name' => [
+                        0 => 'IMG_20220925_180633.jpg',
+                        1 => 'penny.jpg',
+                ],
+                'full_path' => [
+                        0 => 'IMG_20220925_180633.jpg',
+                        1 => 'penny.jpg',
+                    ],
+                'type' => [
+                        0 => 'image/jpeg',
+                        1 => 'image/jpeg',
+                    ],
+                'tmp_name' => [
+                        0 => '/tmp/phpwJ8wnP',
+                        1 => '/tmp/php4FPCjN',
+                    ],
+                'error' => [
+                        0 => 0,
+                        1 => 0,
+                    ],
+                'size' => [
+                        0 => 1245045,
+                        1 => 212844,
+                    ],
+                ],
+        ];
+
+        exec('"test" > /tmp/test'.$string.'.jpg');
     }
 }
