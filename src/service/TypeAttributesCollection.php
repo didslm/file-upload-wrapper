@@ -20,7 +20,6 @@ class TypeAttributesCollection implements \IteratorAggregate
             $attributes = $property->getAttributes(TypeInterface::class, \ReflectionAttribute::IS_INSTANCEOF);
             foreach ($attributes as $attribute) {
                 $type = $attribute->newInstance();
-                $property->setAccessible(true);
                 if ($type instanceof TypeInterface) {
                     $types[] = new RequestFileType($type, $property->getName());
                 }

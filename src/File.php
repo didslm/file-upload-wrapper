@@ -14,8 +14,8 @@ final class File
     private string $generatedName;
 
     protected function __construct(
-        private string $uploadDir,
-        private array $uploadedFileData
+        private readonly string $uploadDir,
+        private readonly array $uploadedFileData
     ){}
 
     public static function upload(object &$obj, ?array $checkers = []): void
@@ -26,22 +26,25 @@ final class File
             throw new MissingFileException();
         }
 
-        $uploadedFile = $_FILES[$typesCollection->getType()->getRequestField()];
+        foreach($typesCollection as $type) {
+            $uploadedFile = $_FILES[$type->getFileType()->getRequestField()] ?? null;
 
-        $file = new self(
-            $_SERVER['DOCUMENT_ROOT'] .'/'. trim($typesCollection->getType()->getDir(), '/') . '/',
-            $uploadedFile
-        );
 
-        $file->validate(...$checkers);
+            $file = new self(
+                $_SERVER['DOCUMENT_ROOT'] . '/' . trim($typesCollection->getType()->getDir(), '/') . '/',
+                $uploadedFile
+            );
 
-        if ($file->uploadDirExists() === false) {
-            $file->createDir();
+            $file->validate(...$checkers);
+
+            if ($file->uploadDirExists() === false) {
+                $file->createDir();
+            }
+
+            $file->saveFile();
+
+            $obj->{$type->getProperty()} = $file->getGeneratedName();
         }
-
-        $file->saveFile();
-
-        $obj->{$typesCollection->getProperty()} = $file->getGeneratedName();
     }
 
     private function saveFile(): void

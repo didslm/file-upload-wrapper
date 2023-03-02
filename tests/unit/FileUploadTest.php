@@ -6,6 +6,7 @@ use Didslm\FileUploadWrapper\exception\MissingFileException;
 use Didslm\FileUploadWrapper\File;
 use Didslm\FileUploadWrapper\checker\FileType;
 use Didslm\FileUploadWrapper\tests\unit\entity\Product;
+use Didslm\FileUploadWrapper\Tests\unit\entity\Profile;
 use Didslm\FileUploadWrapper\Type;
 use PHPUnit\Framework\TestCase;
 
@@ -19,21 +20,21 @@ class FileUploadTest extends TestCase
         $_SERVER['DOCUMENT_ROOT'] = dirname(__DIR__, 2);
     }
 
+    public function tearDown(): void
+    {
+        parent::tearDown();
+        $_FILES = [];
+
+        $fileDir = dirname(__DIR__, 2) . '/public';
+        exec("rm -rf $fileDir");
+    }
+
     public function testShouldUploadJpegFileSuccessfully()
     {
 
+        $this->uploadFile('article_image');
+
         $product = new Product();
-
-        $_FILES['article_image'] = [
-            'name' => 'testimg.jpg',
-            'type' => 'image/jpeg',
-            'tmp_name' => '/tmp/test.jpg',
-            'error' => 0,
-            'size' => 123456
-        ];
-
-        exec('"test" > /tmp/test.jpg');
-
 
         File::upload($product, [
             new FileType([Type::JPEG])
@@ -42,8 +43,6 @@ class FileUploadTest extends TestCase
         $fileDir = $_SERVER['DOCUMENT_ROOT'] . '/public/images/';
 
         self::assertFileExists($fileDir . $product->getImageFilename());
-        exec('rm -r '.dirname($fileDir . $product->getImageFilename()));
-        self::assertFileDoesNotExist($fileDir. $product->getImageFilename());
     }
 
     public function testShouldThrowExceptionWhenRequiredFileIsMissing()
@@ -56,5 +55,34 @@ class FileUploadTest extends TestCase
         File::upload($product, [
             new FileType([Type::JPEG])
         ]);
+    }
+
+    public function testShouldUploadSuccessfullyMultipleImages()
+    {
+        $this->uploadFile('image');
+        $this->uploadFile('cover');
+
+        $profile = new Profile();
+
+        File::upload($profile, [
+            new FileType([Type::JPEG])
+        ]);
+
+        self::assertFileExists($_SERVER['DOCUMENT_ROOT'] . '/public/images/' . $profile->getImageFilename());
+        self::assertFileExists($_SERVER['DOCUMENT_ROOT'] . '/public/images/' . $profile->getImage2Filename());
+    }
+
+    private function uploadFile(string $string)
+    {
+        $_FILES[$string] = [
+            'name' => $string.'_testimg.jpg',
+            'type' => 'image/jpeg',
+            'tmp_name' => '/tmp/test'.$string.'.jpg',
+            'error' => 0,
+            'size' => 123456
+        ];
+
+        exec('"test" > /tmp/test'.$string.'.jpg');
+
     }
 }
