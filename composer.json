@@ -20,7 +20,7 @@
         }
     ],
     "scripts": {
-        "test": "vendor/bin/phpunit tests/unit",
+        "test": "vendor/bin/phpunit tests/unit"
     },
     "require-dev": {
         "phpunit/phpunit": "@dev"
