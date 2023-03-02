@@ -13,8 +13,8 @@ final class File
     private string $generatedName;
 
     protected function __construct(
-        readonly string $uploadDir,
-        readonly array $uploadedFileData
+        private string $uploadDir,
+        private array $uploadedFileData
     ){}
 
     public static function upload(object &$obj, ?array $checkers = []): void
@@ -69,7 +69,7 @@ final class File
     }
     private function generateName(): string
     {
-        return $this->generatedName = md5(uniqid(self::DEFAULT_FILE_PREFIX, true)).'.'.FileType::TYPES[$this->uploadedFileData['type']];
+        return $this->generatedName = md5(uniqid(self::DEFAULT_FILE_PREFIX, true)).'.'.Type::TYPES[$this->uploadedFileData['type']];
     }
 
     private function uploadDirExists(): bool

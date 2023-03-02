@@ -4,8 +4,8 @@ namespace Didslm\FileUploadWrapper\Tests\unit;
 
 use Didslm\FileUploadWrapper\File;
 use Didslm\FileUploadWrapper\checker\FileType;
-use Didslm\FileUploadWrapper\checker\checker;
 use Didslm\FileUploadWrapper\tests\unit\entity\Product;
+use Didslm\FileUploadWrapper\Type;
 use PHPUnit\Framework\TestCase;
 
 class FileUploadTest extends TestCase
@@ -30,7 +30,7 @@ class FileUploadTest extends TestCase
 
 
         File::upload($product, [
-            new FileType([Checker::JPEG])
+            new FileType([Type::JPEG])
         ]);
 
         $fileDir = $rootDir . '/public/images/';

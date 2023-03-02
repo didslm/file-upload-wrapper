@@ -2,7 +2,7 @@
 
 namespace Didslm\FileUploadWrapper\checker;
 
-readonly class FileType implements Checker
+class FileType implements Checker
 {
     const CHECKER_NAME = 'File Type';
 
@@ -15,6 +15,8 @@ readonly class FileType implements Checker
         if (!in_array($fileType, $this->acceptedTypes, true)) {
             throw new CheckException($this, $fileType);
         }
+
+        return true;
     }
 
     public function getName(): string
