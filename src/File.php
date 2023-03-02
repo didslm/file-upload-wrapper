@@ -7,9 +7,13 @@ use Didslm\FileUploadWrapper\service\TypeExtractorService;
 
 class File
 {
-    public static function upload(object &$obj, array $filters): void
+    public static function upload(object &$obj, ?array $filters = []): void
     {
-        $fileType = (new TypeExtractorService($obj))->getType();
+        $fileTypes = (new TypeExtractorService($obj))->getTypes();
+
+        $property = array_key_last($fileTypes);
+        $fileType = array_pop($fileTypes);
+
 
         $firstFile = $_FILES[$fileType->getRequestField()];
         $dir = trim($fileType->getDir(), '/');
@@ -20,7 +24,7 @@ class File
         }
 
         foreach ($filters as $filter) {
-            if (!$filter->isPassed()) {
+            if (!$filter->checkFile($firstFile)) {
                 throw new \Exception('File type is not allowed');
             }
         }
@@ -35,6 +39,6 @@ class File
         }
         unlink($fieldName);
 
-        $obj->image = $dir.'/'.$newFileName;
+        $obj->$property = $dir.'/'.$newFileName;
     }
 }

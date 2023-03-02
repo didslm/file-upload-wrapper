@@ -13,17 +13,18 @@ class TypeExtractorService
         $this->reflection = new \ReflectionClass($object);
     }
 
-    public function getType(): TypeInterface
+    public function getTypes(): array
     {
+        $types = [];
         foreach ($this->reflection->getProperties() as $property) {
             $attributes = $property->getAttributes(TypeInterface::class, \ReflectionAttribute::IS_INSTANCEOF);
             foreach ($attributes as $attribute) {
                 if ($attribute->newInstance() instanceof TypeInterface) {
-                    return $attribute->newInstance();
+                    $types[$property->getName()] = $attribute->newInstance();
                 }
             }
         }
 
-        throw new \Exception('No type found');
+        return $types;
     }
 }

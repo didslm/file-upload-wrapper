@@ -4,5 +4,5 @@ namespace Didslm\FileUploadWrapper\filters;
 
 interface FilterInterface
 {
-    public function isPassed(): bool;
+    public function checkFile(array $fileData): bool;
 }

@@ -16,12 +16,9 @@ class FileType implements FilterInterface
 
     public function __construct(private array $types){}
 
-    public function isPassed(): bool
+    public function checkFile(array $fileData): bool
     {
-        $fileToUpload = $_FILES['article_image'];
-
-        //get current file type
-        $fileType = $fileToUpload['type'];
+        $fileType = $fileData['type'];
 
         return in_array($fileType, $this->types, true);
     }
