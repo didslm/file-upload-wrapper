@@ -112,7 +112,7 @@ class FileUploadTest extends TestCase
 
     public function testShouldHandleMultipleFilesFromSameField()
     {
-        $this->uploadFiles('image');
+        $this->uploadFiles('images');
 
         $social = new Social();
 
@@ -123,10 +123,32 @@ class FileUploadTest extends TestCase
 
         $fileDir = $_SERVER['DOCUMENT_ROOT'] . '/public/images/';
 
-        [$image, $image2] = $social->getImages();
+        list($image, $image2) = $social->getImages();
 
         self::assertFileExists($fileDir . $image);
         self::assertFileExists($fileDir . $image2);
+        self::assertNotEquals($image, $image2);
+    }
+
+    /**
+     * Example form input 
+     * <input type="file" name="my-form[details][avatar]" />
+     */
+    public function testShouldHandleDeeperLevelsOfFormNames()
+    {
+        $this->uploadFilesWithDeeperLevelsOfArrays('images');
+
+        $social = new Social();
+
+        File::upload($social, [
+            new FileType([Type::PNG]),
+            new FileSize(4, Size::MB)
+        ]);
+
+        $fileDir = $_SERVER['DOCUMENT_ROOT'] . '/public/images/';
+
+        [$image] = $social->getImages();
+        self::assertFileExists($fileDir . $image);
     }
 
     private function uploadFile(string $string)
@@ -143,17 +165,21 @@ class FileUploadTest extends TestCase
 
     }
 
+    /**
+     * the input name "files", 
+     * submitting images[0] and images[1] — PHP will represent this as:
+     */
     private function uploadFiles(string $string)
     {
         $_FILES[$string] = [
-            'image' => [
+
                 'name' => [
                         0 => 'IMG_20220925_180633.jpg',
-                        1 => 'penny.jpg',
+                        1 => 'testing.jpg',
                 ],
                 'full_path' => [
                         0 => 'IMG_20220925_180633.jpg',
-                        1 => 'penny.jpg',
+                        1 => 'testing.jpg',
                     ],
                 'type' => [
                         0 => 'image/jpeg',
@@ -171,10 +197,41 @@ class FileUploadTest extends TestCase
                         0 => 1245045,
                         1 => 212844,
                     ],
-                ],
-        ];
+            ];
 
         exec('"test" > /tmp/phpwJ8wnP');
         exec('"test" > /tmp/php4FPCjN');
+    }
+
+    public function uploadFilesWithDeeperLevelsOfArrays(string $key) 
+    {
+        $_FILES[$key] =  array (
+                'name' => array (
+                    'details' => array (
+                        'avatar' => 'my-avatar.png',
+                    ),
+                ),
+                'type' => array (
+                    'details' => array (
+                        'avatar' => 'image/png',
+                    ),
+                ),
+                'tmp_name' => array (
+                    'details' => array (
+                        'avatar' => '/tmp/phpwJ8wnP',
+                    ),
+                ),
+                'error' => array (
+                    'details' => array (
+                        'avatar' => 0,
+                    ),
+                ),
+                'size' => array (
+                    'details' => array (
+                        'avatar' => 90996,
+                    ),
+            ),
+        );
+        exec('"test" > /tmp/phpwJ8wnP');
     }
 }

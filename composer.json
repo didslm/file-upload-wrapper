@@ -24,7 +24,7 @@
         }
     ],
     "scripts": {
-        "test": "./vendor/bin/phpunit tests/unit"
+        "test": "./vendor/bin/phpunit tests/unit --colors=always --testdox"
     },
     "require-dev": {
         "phpunit/phpunit": "@dev"

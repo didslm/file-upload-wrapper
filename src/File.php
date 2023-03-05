@@ -4,7 +4,6 @@ namespace Didslm\FileUpload;
 
 use Didslm\FileUpload\check\CheckUploadException;
 use Didslm\FileUpload\check\Check;
-use Didslm\FileUpload\exception\MissingFileException;
 use Didslm\FileUpload\service\TypeAttributesCollection;
 use Didslm\FileUpload\service\UploadedFilesFactory;
 use Psr\Http\Message\UploadedFileInterface;
@@ -24,18 +23,15 @@ final class File
         $typesCollection = TypeAttributesCollection::createFromObject($obj);
         $uploadedFiles = UploadedFilesFactory::create($_FILES);
 
-        if ($typesCollection->missingRequiredFile()) {
-            throw new MissingFileException();
-        }
+        $uploadedFiles->validate($typesCollection->getRequiredFields());
 
+        
         foreach($uploadedFiles as $field => $uploadedFile) {
             $uploadedFile = array_pop($uploadedFile);
 
             $type = $typesCollection->getTypeByKey($field);
             $property = $typesCollection->getPropertyByKey($field);
 
-
-//            throw new \Exception( print_R($uploadedFile,1));
             if ($type === null) {
                 continue;
             }
@@ -47,13 +43,16 @@ final class File
 
             $file->validate(...$checkers);
 
-//            throw new \Exception( print_R($property,1));
             if ($file->uploadDirExists() === false) {
                 $file->createDir();
             }
 
             $uploadedFile->moveTo($file->uploadDir . $file->generateName());
 
+            if (is_array($obj->{$property})) {
+                $obj->{$property}[] = $file->getGeneratedName();
+                continue;
+            }
 
             $obj->{$property} = $file->getGeneratedName();
         }

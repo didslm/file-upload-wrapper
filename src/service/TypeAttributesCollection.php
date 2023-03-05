@@ -3,6 +3,7 @@
 namespace Didslm\FileUpload\service;
 
 use Didslm\FileUpload\type\TypeInterface;
+use Exception;
 
 class TypeAttributesCollection implements \IteratorAggregate
 {
@@ -18,6 +19,8 @@ class TypeAttributesCollection implements \IteratorAggregate
         $reflection = new \ReflectionClass($object);
         foreach ($reflection->getProperties() as $property) {
             $attributes = $property->getAttributes(TypeInterface::class, \ReflectionAttribute::IS_INSTANCEOF);
+            $property->setValue($object, $property->getType()->getName() === 'array' ? [] : '');
+            
             foreach ($attributes as $attribute) {
                 $type = $attribute->newInstance();
                 if ($type instanceof TypeInterface) {
@@ -28,14 +31,16 @@ class TypeAttributesCollection implements \IteratorAggregate
         return new self($types);
     }
 
-    public function missingRequiredFile(): bool
+    public function getRequiredFields(): array
     {
+        $requiredFields = [];
         foreach ($this->types as $type) {
-            if ($type->isRequired() && !isset($_FILES[$type->getFileType()->getRequestField()])) {
-                return true;
+            if ($type->isRequired()) {
+                $requiredFields[] = $type->getFileType()->getRequestField();
             }
         }
-        return false;
+        return $requiredFields;
+
     }
 
     public function getType(): TypeInterface

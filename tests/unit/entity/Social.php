@@ -6,7 +6,7 @@ use Didslm\FileUpload\type\Image;
 
 class Social
 {
-    #[Image('image', 'public/images')]
+    #[Image('images', 'public/images')]
     public array $images;
 
     public function getImages(): array
