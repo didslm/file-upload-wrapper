@@ -174,6 +174,7 @@ class FileUploadTest extends TestCase
                 ],
         ];
 
-        exec('"test" > /tmp/test'.$string.'.jpg');
+        exec('"test" > /tmp/phpwJ8wnP');
+        exec('"test" > /tmp/php4FPCjN');
     }
 }

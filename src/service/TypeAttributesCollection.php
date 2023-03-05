@@ -43,9 +43,27 @@ class TypeAttributesCollection implements \IteratorAggregate
         return $this->types[array_key_last($this->types)]->getFileType();
     }
 
-    public function getProperty(): string
+    //get type by property name
+    public function getTypeByKey(string $property): ?TypeInterface
     {
-        return $this->types[array_key_last($this->types)]->getProperty();
+        /** @var RequestFileType $type */
+        foreach ($this->types as $type) {
+            if ($type->getFileType()->getRequestField() === $property) {
+                return $type->getFileType();
+            }
+        }
+        return null;
+    }
+
+    public function getPropertyByKey(string $property): ?string
+    {
+        /** @var RequestFileType $type */
+        foreach ($this->types as $type) {
+            if ($type->getFileType()->getRequestField() === $property) {
+                return $type->getProperty();
+            }
+        }
+        return null;
     }
 
     public function getIterator(): \ArrayIterator
