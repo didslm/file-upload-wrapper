@@ -11,6 +11,7 @@ use Didslm\FileUpload\check\FileType;
 use Didslm\FileUpload\Size;
 use Didslm\FileUpload\Tests\unit\entity\Product;
 use Didslm\FileUpload\Tests\unit\entity\Profile;
+use Didslm\FileUpload\Tests\unit\entity\Social;
 use Didslm\FileUpload\Type;
 use PHPUnit\Framework\TestCase;
 
@@ -109,6 +110,47 @@ class FileUploadTest extends TestCase
         }
     }
 
+    public function testShouldHandleMultipleFilesFromSameField()
+    {
+        $this->uploadFiles('images');
+
+        $social = new Social();
+
+        File::upload($social, [
+            new FileType([Type::JPEG]),
+            new FileSize(4, Size::MB)
+        ]);
+
+        $fileDir = $_SERVER['DOCUMENT_ROOT'] . '/public/images/';
+
+        list($image, $image2) = $social->getImages();
+
+        self::assertFileExists($fileDir . $image);
+        self::assertFileExists($fileDir . $image2);
+        self::assertNotEquals($image, $image2);
+    }
+
+    /**
+     * Example form input 
+     * <input type="file" name="my-form[details][avatar]" />
+     */
+    public function testShouldHandleDeeperLevelsOfFormNames()
+    {
+        $this->uploadFilesWithDeeperLevelsOfArrays('images');
+
+        $social = new Social();
+
+        File::upload($social, [
+            new FileType([Type::PNG]),
+            new FileSize(4, Size::MB)
+        ]);
+
+        $fileDir = $_SERVER['DOCUMENT_ROOT'] . '/public/images/';
+
+        [$image] = $social->getImages();
+        self::assertFileExists($fileDir . $image);
+    }
+
     private function uploadFile(string $string)
     {
         $_FILES[$string] = [
@@ -121,5 +163,75 @@ class FileUploadTest extends TestCase
 
         exec('"test" > /tmp/test'.$string.'.jpg');
 
+    }
+
+    /**
+     * the input name "files", 
+     * submitting images[0] and images[1] — PHP will represent this as:
+     */
+    private function uploadFiles(string $string)
+    {
+        $_FILES[$string] = [
+
+                'name' => [
+                        0 => 'IMG_20220925_180633.jpg',
+                        1 => 'testing.jpg',
+                ],
+                'full_path' => [
+                        0 => 'IMG_20220925_180633.jpg',
+                        1 => 'testing.jpg',
+                    ],
+                'type' => [
+                        0 => 'image/jpeg',
+                        1 => 'image/jpeg',
+                    ],
+                'tmp_name' => [
+                        0 => '/tmp/phpwJ8wnP',
+                        1 => '/tmp/php4FPCjN',
+                    ],
+                'error' => [
+                        0 => 0,
+                        1 => 0,
+                    ],
+                'size' => [
+                        0 => 1245045,
+                        1 => 212844,
+                    ],
+            ];
+
+        exec('"test" > /tmp/phpwJ8wnP');
+        exec('"test" > /tmp/php4FPCjN');
+    }
+
+    public function uploadFilesWithDeeperLevelsOfArrays(string $key) 
+    {
+        $_FILES[$key] =  array (
+                'name' => array (
+                    'details' => array (
+                        'avatar' => 'my-avatar.png',
+                    ),
+                ),
+                'type' => array (
+                    'details' => array (
+                        'avatar' => 'image/png',
+                    ),
+                ),
+                'tmp_name' => array (
+                    'details' => array (
+                        'avatar' => '/tmp/phpwJ8wnP',
+                    ),
+                ),
+                'error' => array (
+                    'details' => array (
+                        'avatar' => 0,
+                    ),
+                ),
+                'size' => array (
+                    'details' => array (
+                        'avatar' => 90996,
+                    ),
+            ),
+        );
+        exec('"test" > /tmp/phpwJ8wnP');
     }
 }

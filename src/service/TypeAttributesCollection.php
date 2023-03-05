@@ -3,6 +3,7 @@
 namespace Didslm\FileUpload\service;
 
 use Didslm\FileUpload\type\TypeInterface;
+use Exception;
 
 class TypeAttributesCollection implements \IteratorAggregate
 {
@@ -18,6 +19,8 @@ class TypeAttributesCollection implements \IteratorAggregate
         $reflection = new \ReflectionClass($object);
         foreach ($reflection->getProperties() as $property) {
             $attributes = $property->getAttributes(TypeInterface::class, \ReflectionAttribute::IS_INSTANCEOF);
+            $property->setValue($object, $property->getType()->getName() === 'array' ? [] : '');
+            
             foreach ($attributes as $attribute) {
                 $type = $attribute->newInstance();
                 if ($type instanceof TypeInterface) {
@@ -28,14 +31,16 @@ class TypeAttributesCollection implements \IteratorAggregate
         return new self($types);
     }
 
-    public function missingRequiredFile(): bool
+    public function getRequiredFields(): array
     {
+        $requiredFields = [];
         foreach ($this->types as $type) {
-            if ($type->isRequired() && !isset($_FILES[$type->getFileType()->getRequestField()])) {
-                return true;
+            if ($type->isRequired()) {
+                $requiredFields[] = $type->getFileType()->getRequestField();
             }
         }
-        return false;
+        return $requiredFields;
+
     }
 
     public function getType(): TypeInterface
@@ -43,9 +48,27 @@ class TypeAttributesCollection implements \IteratorAggregate
         return $this->types[array_key_last($this->types)]->getFileType();
     }
 
-    public function getProperty(): string
+    //get type by property name
+    public function getTypeByKey(string $property): ?TypeInterface
     {
-        return $this->types[array_key_last($this->types)]->getProperty();
+        /** @var RequestFileType $type */
+        foreach ($this->types as $type) {
+            if ($type->getFileType()->getRequestField() === $property) {
+                return $type->getFileType();
+            }
+        }
+        return null;
+    }
+
+    public function getPropertyByKey(string $property): ?string
+    {
+        /** @var RequestFileType $type */
+        foreach ($this->types as $type) {
+            if ($type->getFileType()->getRequestField() === $property) {
+                return $type->getProperty();
+            }
+        }
+        return null;
     }
 
     public function getIterator(): \ArrayIterator

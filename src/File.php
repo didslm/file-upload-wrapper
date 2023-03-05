@@ -3,10 +3,10 @@
 namespace Didslm\FileUpload;
 
 use Didslm\FileUpload\check\CheckUploadException;
-use Didslm\FileUpload\check\FileType;
 use Didslm\FileUpload\check\Check;
-use Didslm\FileUpload\exception\MissingFileException;
 use Didslm\FileUpload\service\TypeAttributesCollection;
+use Didslm\FileUpload\service\UploadedFilesFactory;
+use Psr\Http\Message\UploadedFileInterface;
 
 final class File
 {
@@ -15,23 +15,29 @@ final class File
 
     protected function __construct(
         private readonly string $uploadDir,
-        private readonly array $uploadedFileData
+        private readonly UploadedFileInterface $uploadedFile
     ){}
 
     public static function upload(object &$obj, ?array $checkers = []): void
     {
         $typesCollection = TypeAttributesCollection::createFromObject($obj);
+        $uploadedFiles = UploadedFilesFactory::create($_FILES);
 
-        if ($typesCollection->missingRequiredFile()) {
-            throw new MissingFileException();
-        }
+        $uploadedFiles->validate($typesCollection->getRequiredFields());
 
-        foreach($typesCollection as $type) {
-            $uploadedFile = $_FILES[$type->getFileType()->getRequestField()] ?? null;
+        
+        foreach($uploadedFiles as $field => $uploadedFile) {
+            $uploadedFile = array_pop($uploadedFile);
 
+            $type = $typesCollection->getTypeByKey($field);
+            $property = $typesCollection->getPropertyByKey($field);
+
+            if ($type === null) {
+                continue;
+            }
 
             $file = new self(
-                $_SERVER['DOCUMENT_ROOT'] . '/' . trim($typesCollection->getType()->getDir(), '/') . '/',
+                $_SERVER['DOCUMENT_ROOT'] . '/' . trim($type->getDir(), '/') . '/',
                 $uploadedFile
             );
 
@@ -41,19 +47,15 @@ final class File
                 $file->createDir();
             }
 
-            $file->saveFile();
+            $uploadedFile->moveTo($file->uploadDir . $file->generateName());
 
-            $obj->{$type->getProperty()} = $file->getGeneratedName();
-        }
-    }
+            if (is_array($obj->{$property})) {
+                $obj->{$property}[] = $file->getGeneratedName();
+                continue;
+            }
 
-    private function saveFile(): void
-    {
-        $r = copy($this->uploadedFileData['tmp_name'], $this->uploadDir . $this->generateName());
-        if (!$r) {
-            throw new \Exception('File upload failed');
+            $obj->{$property} = $file->getGeneratedName();
         }
-        unlink($this->uploadedFileData['tmp_name']);
     }
 
     private function createDir(): void
@@ -66,8 +68,8 @@ final class File
     private function validate(Check... $checkers): void
     {
         foreach ($checkers as $check) {
-            if (!$check->isPassed($this->uploadedFileData)) {
-                throw new CheckUploadException($check, $this->uploadedFileData['type']);
+            if (!$check->isPassed($this->uploadedFile)) {
+                throw new CheckUploadException($check->getName(), $this->uploadedFile->getClientMediaType());
             }
         }
     }
@@ -78,7 +80,8 @@ final class File
     }
     private function generateName(): string
     {
-        return $this->generatedName = md5(uniqid(self::DEFAULT_FILE_PREFIX, true)).'.'.Type::TYPES[$this->uploadedFileData['type']];
+        $ext = Type::TYPES[$this->uploadedFile->getClientMediaType()];
+        return $this->generatedName = md5(uniqid(self::DEFAULT_FILE_PREFIX, true)).'.'.$ext;
     }
 
     private function uploadDirExists(): bool
