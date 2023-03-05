@@ -44,5 +44,31 @@ try {
     // handle exception
 }
 ```
+
+### Checks
+Currently there are the following checks that you can use 
+
+
+`Type`
+Check for file types (png, jpg, gif)
+```php
+new FileType([Type::PNG, Type::JPEG, Type::GIF])
+```
+
+
+`Size`
+Validates if the file is less than the specified size.
+```php
+new FileSize(2, Size::MB)
+new FileSize(200, Size::KB)
+```
+
+
+`Dimension`
+Validates if the dimensions of the images are not bigger than specified
+```php
+new ImageDimension(200, 200)
+```
+
 -----
 Keep in touch with me on [Twitter](https://twitter.com/slmdiar) or [LinkedIn](https://www.linkedin.com/in/diarselimi)
