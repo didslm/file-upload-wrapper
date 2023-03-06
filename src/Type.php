@@ -9,7 +9,7 @@ class Type
     public const PNG = 'image/png';
     public const GIF = 'image/gif';
 
-    public const TYPES = [
+    public const ALL = [
         self::JPEG => 'jpg',
         self::PNG => 'png',
         self::GIF => 'gif',

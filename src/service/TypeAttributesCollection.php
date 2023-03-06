@@ -2,7 +2,7 @@
 
 namespace Didslm\FileUpload\service;
 
-use Didslm\FileUpload\type\TypeInterface;
+use Didslm\FileUpload\Attribute\TypeInterface;
 use Exception;
 
 class TypeAttributesCollection implements \IteratorAggregate

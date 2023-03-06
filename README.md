@@ -45,11 +45,12 @@ try {
 }
 ```
 
-### Checks
-Currently there are the following checks that you can use 
+### Validation
+Currently, there are the following checks that you can use 
 
 
 `Type`
+
 Check for file types (png, jpg, gif)
 ```php
 new FileType([Type::PNG, Type::JPEG, Type::GIF])
@@ -57,6 +58,7 @@ new FileType([Type::PNG, Type::JPEG, Type::GIF])
 
 
 `Size`
+
 Validates if the file is less than the specified size.
 ```php
 new FileSize(2, Size::MB)
@@ -65,9 +67,10 @@ new FileSize(200, Size::KB)
 
 
 `Dimension`
+
 Validates if the dimensions of the images are not bigger than specified
 ```php
-new ImageDimension(200, 200)
+new Dimension(200, 200)
 ```
 
 -----

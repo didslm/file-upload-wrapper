@@ -2,7 +2,7 @@
 
 namespace Didslm\FileUpload\Tests\unit\entity;
 
-use Didslm\FileUpload\type\Image;
+use Didslm\FileUpload\Attribute\Image;
 
 class Profile
 {

@@ -2,10 +2,28 @@
 
 namespace Didslm\FileUpload\service;
 
+use Didslm\FileUpload\Stream;
 use Psr\Http\Message\UploadedFileInterface;
+use PSr\Http\Message\StreamInterface;
 
 class UploadedFile implements UploadedFileInterface
 {
+    /**
+     * @const array
+     * @link https://www.php.net/manual/en/features.file-upload.errors.php
+     */
+    private const ERRORS = [
+        UPLOAD_ERR_OK => 'There is no error, the file uploaded with success.',
+        UPLOAD_ERR_INI_SIZE => 'The uploaded file exceeds the upload_max_filesize directive in php.ini.',
+        UPLOAD_ERR_FORM_SIZE => 'The uploaded file exceeds the MAX_FILE_SIZE directive'
+            . ' that was specified in the HTML form.',
+        UPLOAD_ERR_PARTIAL => 'The uploaded file was only partially uploaded.',
+        UPLOAD_ERR_NO_FILE => 'No file was uploaded.',
+        UPLOAD_ERR_NO_TMP_DIR => 'Missing a temporary folder.',
+        UPLOAD_ERR_CANT_WRITE => 'Failed to write file to disk.',
+        UPLOAD_ERR_EXTENSION => 'A PHP extension stopped the file upload.',
+    ];
+    
     public function __construct(
         private ?string $tmpName,
         private ?string $name,
@@ -13,12 +31,13 @@ class UploadedFile implements UploadedFileInterface
         private ?int $size,
         private int $error
     ){}
-    public function getStream()
-    {
 
+    public function getStream(): StreamInterface
+    {
+        return new Stream($this->tmpName);
     }
 
-    public function moveTo($targetPath)
+    public function moveTo($targetPath): void
     {
         if (copy($this->tmpName, $targetPath)) {
             unlink($this->tmpName);

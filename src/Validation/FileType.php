@@ -1,10 +1,11 @@
 <?php
 
-namespace Didslm\FileUpload\check;
+namespace Didslm\FileUpload\Validation;
 
+use Didslm\FileUpload\Exception\ValidationException;
 use Psr\Http\Message\UploadedFileInterface;
 
-class FileType implements Check
+class FileType implements iValidator
 {
     const CHECKER_NAME = 'File Type';
 
@@ -14,7 +15,7 @@ class FileType implements Check
     {
 
         if (!in_array($file->getClientMediaType(), $this->acceptedTypes, true)) {
-            throw new CheckUploadException(sprintf('File type (%s) is not allowed. Allowed types are %s.',$file->getClientMediaType(), implode(', ', $this->acceptedTypes)));
+            throw new ValidationException(sprintf('File type (%s) is not allowed. Allowed types are %s.',$file->getClientMediaType(), implode(', ', $this->acceptedTypes)));
         }
 
         return true;

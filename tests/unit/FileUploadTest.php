@@ -2,12 +2,13 @@
 
 namespace Didslm\FileUpload\Tests\unit;
 
-use Didslm\FileUpload\check\CheckUploadException;
-use Didslm\FileUpload\check\FileSize;
+use Didslm\FileUpload\Exception\ValidationException;
+use Didslm\FileUpload\Validation\Dimension;
+use Didslm\FileUpload\Validation\FileSize;
 use Didslm\FileUpload\exception\FileUploadException;
 use Didslm\FileUpload\exception\MissingFileException;
 use Didslm\FileUpload\File;
-use Didslm\FileUpload\check\FileType;
+use Didslm\FileUpload\Validation\FileType;
 use Didslm\FileUpload\Size;
 use Didslm\FileUpload\Tests\unit\entity\Product;
 use Didslm\FileUpload\Tests\unit\entity\Profile;
@@ -84,12 +85,29 @@ class FileUploadTest extends TestCase
 
         $product = new Product();
 
-        $this->expectException(CheckUploadException::class);
+        $this->expectException(ValidationException::class);
         $this->expectExceptionMessage('File size is too big. Limit is 2 MB.');
 
         File::upload($product, [
             new FileType([Type::JPEG]),
             new FileSize(2, Size::MB)
+        ]);
+    }
+
+    public function testShouldThrowExceptionWhenDimensionsAreBiggerThanExpected(): void
+    {
+       //create a temp file with dimensions 200x200
+        $this->loadRealImage('article_image', 'image.png');
+
+        $product = new Product();
+
+        $this->expectException(ValidationException::class);
+        $this->expectExceptionMessage('File dimensions are too big. Limit is 200 by 200.');
+
+        File::upload($product, [
+            new FileType([Type::JPEG, Type::PNG]),
+            new FileSize(4),
+            new Dimension(200, 200)
         ]);
     }
 
@@ -151,7 +169,7 @@ class FileUploadTest extends TestCase
         self::assertFileExists($fileDir . $image);
     }
 
-    private function uploadFile(string $string)
+    private function uploadFile(string $string, string $dimensions = '100x100')
     {
         $_FILES[$string] = [
             'name' => $string.'_testimg.jpg',
@@ -162,7 +180,7 @@ class FileUploadTest extends TestCase
         ];
 
         exec('"test" > /tmp/test'.$string.'.jpg');
-
+        exec('convert -size '.$dimensions.' xc:white /tmp/test'.$string.'.jpg');
     }
 
     /**
@@ -233,5 +251,16 @@ class FileUploadTest extends TestCase
             ),
         );
         exec('"test" > /tmp/phpwJ8wnP');
+    }
+
+    private function loadRealImage(string $string, string $image): void
+    {
+        $_FILES[$string] = [
+            'name' => $image,
+            'type' => 'image/png',
+            'tmp_name' => __DIR__ . '/Image/' . $image,
+            'error' => 0,
+            'size' => 1000000 * 3 // 3 MB
+        ];
     }
 }

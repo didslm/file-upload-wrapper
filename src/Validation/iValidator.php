@@ -1,10 +1,10 @@
 <?php
 
-namespace Didslm\FileUpload\check;
+namespace Didslm\FileUpload\Validation;
 
 use Psr\Http\Message\UploadedFileInterface;
 
-interface Check
+interface iValidator
 {
     public function isPassed(UploadedFileInterface $file): bool;
     public function getName(): string;

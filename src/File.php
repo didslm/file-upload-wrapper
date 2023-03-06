@@ -2,10 +2,11 @@
 
 namespace Didslm\FileUpload;
 
-use Didslm\FileUpload\check\CheckUploadException;
-use Didslm\FileUpload\check\Check;
+use Didslm\FileUpload\exception\MissingFileException;
+use Didslm\FileUpload\Exception\ValidationException;
+use Didslm\FileUpload\Factory\UploadedFilesFactory;
+use Didslm\FileUpload\Validation\iValidator;
 use Didslm\FileUpload\service\TypeAttributesCollection;
-use Didslm\FileUpload\service\UploadedFilesFactory;
 use Psr\Http\Message\UploadedFileInterface;
 
 final class File
@@ -14,10 +15,14 @@ final class File
     private string $generatedName;
 
     protected function __construct(
-        private readonly string $uploadDir,
-        private readonly UploadedFileInterface $uploadedFile
+        private string $uploadDir,
+        private UploadedFileInterface $uploadedFile
     ){}
 
+    /**
+     * @throws MissingFileException
+     * @throws ValidationException
+     */
     public static function upload(object &$obj, ?array $checkers = []): void
     {
         $typesCollection = TypeAttributesCollection::createFromObject($obj);
@@ -65,11 +70,11 @@ final class File
         }
     }
 
-    private function validate(Check... $checkers): void
+    private function validate(iValidator... $checkers): void
     {
         foreach ($checkers as $check) {
             if (!$check->isPassed($this->uploadedFile)) {
-                throw new CheckUploadException($check->getName(), $this->uploadedFile->getClientMediaType());
+                throw new ValidationException($check->getName(), $this->uploadedFile->getClientMediaType());
             }
         }
     }
@@ -80,7 +85,7 @@ final class File
     }
     private function generateName(): string
     {
-        $ext = Type::TYPES[$this->uploadedFile->getClientMediaType()];
+        $ext = Type::ALL[$this->uploadedFile->getClientMediaType()];
         return $this->generatedName = md5(uniqid(self::DEFAULT_FILE_PREFIX, true)).'.'.$ext;
     }
 

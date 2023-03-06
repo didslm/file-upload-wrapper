@@ -1,7 +1,9 @@
 <?php
 
-namespace Didslm\FileUpload\service;
+namespace Didslm\FileUpload\Factory;
 
+use Didslm\FileUpload\service\UploadedFile;
+use Didslm\FileUpload\service\UploadedFileCollection;
 use Psr\Http\Message\UploadedFileInterface;
 
 class UploadedFilesFactory
