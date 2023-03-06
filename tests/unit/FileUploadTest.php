@@ -187,7 +187,7 @@ class FileUploadTest extends TestCase
      * the input name "files", 
      * submitting images[0] and images[1] — PHP will represent this as:
      */
-    private function uploadFiles(string $string)
+    private function uploadFiles(string $string): void
     {
         $_FILES[$string] = [
 
