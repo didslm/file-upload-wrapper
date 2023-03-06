@@ -2,7 +2,7 @@
 
 namespace Didslm\FileUpload;
 
-use Didslm\FileUpload\exception\MissingFileException;
+use Didslm\FileUpload\Exception\MissingFileException;
 use Didslm\FileUpload\Exception\ValidationException;
 use Didslm\FileUpload\Factory\UploadedFilesFactory;
 use Didslm\FileUpload\Validation\iValidator;

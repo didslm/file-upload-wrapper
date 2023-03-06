@@ -2,7 +2,7 @@
 
 namespace Didslm\FileUpload\service;
 
-use Didslm\FileUpload\exception\MissingFileException;
+use Didslm\FileUpload\Exception\MissingFileException;
 use Psr\Http\Message\UploadedFileInterface;
 
 class UploadedFileCollection implements \IteratorAggregate
