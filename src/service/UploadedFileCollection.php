@@ -14,14 +14,16 @@ class UploadedFileCollection implements \IteratorAggregate
     public function addFile(UploadedFileInterface $file, string $field): void
     {
         $this->files[] = $file;
-        $this->fields[$field] = md5($file->getStream()->getContents());
+        $this->fields[] = [$field, md5($file->getStream()->getContents())];
     }
 
     public function validate(array $requiredFields): void
     {
-        foreach ($requiredFields as $field) {
-            if ($this->fields[$field] === null) {
-                throw new MissingFileException("Missing file for field: $field");
+        $fields = array_column($this->fields, 0);
+
+        foreach ($requiredFields as $requiredField) {
+            if (in_array($requiredField, $fields) === false) {
+                throw new MissingFileException("Missing file for field: $requiredField");
             }
         }
     }
@@ -33,7 +35,9 @@ class UploadedFileCollection implements \IteratorAggregate
 
     public function getField(UploadedFileInterface $uploadedFile): string
     {
-        return array_search(md5($uploadedFile->getStream()->getContents()), $this->fields);
+        $key = array_search(md5($uploadedFile->getStream()->getContents()), array_column($this->fields, 1));
+
+        return $this->fields[$key][0];
     }
 
     public function getIterator(): \ArrayIterator
