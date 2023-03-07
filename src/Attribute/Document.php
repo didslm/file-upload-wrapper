@@ -5,7 +5,7 @@ namespace Didslm\FileUpload\Attribute;
 use Attribute;
 
 #[Attribute(Attribute::TARGET_PROPERTY)]
-class Image implements TypeInterface
+class Document implements TypeInterface
 {
     public function __construct(public string $requestField, public string $dir, public bool $required = true){}
 

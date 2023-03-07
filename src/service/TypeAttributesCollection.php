@@ -18,15 +18,25 @@ class TypeAttributesCollection implements \IteratorAggregate
         $types = [];
         $reflection = new \ReflectionClass($object);
         foreach ($reflection->getProperties() as $property) {
+
             $attributes = $property->getAttributes(TypeInterface::class, \ReflectionAttribute::IS_INSTANCEOF);
-            $property->setValue($object, $property->getType()->getName() === 'array' ? [] : '');
-            
-            foreach ($attributes as $attribute) {
-                $type = $attribute->newInstance();
-                if ($type instanceof TypeInterface) {
-                    $types[] = new RequestFileType($type, $property->getName());
-                }
+            $property->setAccessible(true);
+            if ($property->getType()->getName() === 'array') {
+                $property->setValue($object, []);
+            } else {
+                $property->setValue($object, '');
             }
+
+
+            if (count($attributes) >= 2) {
+                    //throw new ToManyTypesException("To many types for property: {$property->getName()}");
+            }
+
+            [$type] = $attributes;
+            if ($type !== null) {
+                $types[] = new RequestFileType($type->newInstance(), $property->getName());
+            }
+
         }
         return new self($types);
     }

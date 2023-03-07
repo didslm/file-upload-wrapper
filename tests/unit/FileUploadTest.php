@@ -14,6 +14,7 @@ use Didslm\FileUpload\Tests\unit\entity\Product;
 use Didslm\FileUpload\Tests\unit\entity\Profile;
 use Didslm\FileUpload\Tests\unit\entity\Social;
 use Didslm\FileUpload\Type;
+use Didslm\FileUpload\Validation\RequestFieldValidations;
 use PHPUnit\Framework\TestCase;
 
 class FileUploadTest extends TestCase
@@ -71,9 +72,15 @@ class FileUploadTest extends TestCase
 
         $profile = new Profile();
 
-        File::upload($profile, [
-            new FileType([Type::JPEG])
-        ]);
+        $imageValidations = new RequestFieldValidations(
+            'cover',
+            [
+                new FileType([Type::JPEG]),
+                new FileSize(4, Size::MB)
+            ]
+        );
+
+        File::upload($profile, $imageValidations);
 
         self::assertFileExists($_SERVER['DOCUMENT_ROOT'] . '/public/images/' . $profile->getImageFilename());
         self::assertFileExists($_SERVER['DOCUMENT_ROOT'] . '/public/images/' . $profile->getImage2Filename());

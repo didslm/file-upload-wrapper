@@ -39,8 +39,16 @@ class UploadedFile implements UploadedFileInterface
 
     public function moveTo($targetPath): void
     {
-        if (copy($this->tmpName, $targetPath)) {
-            unlink($this->tmpName);
+        if ($this->error !== UPLOAD_ERR_OK) {
+            throw new \RuntimeException(self::ERRORS[$this->error]);
+        }
+
+//        if (!is_uploaded_file($this->tmpName)) {
+//            throw new \RuntimeException("The file $this->tmpName is not an uploaded file.");
+//        }
+
+        if (!copy($this->tmpName, $targetPath)) {
+            throw new \RuntimeException("The file $this->tmpName could not be moved to $targetPath.");
         }
     }
 
