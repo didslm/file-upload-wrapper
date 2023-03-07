@@ -10,9 +10,17 @@ class Product {
     #[Image(requestField: "request_field", dir: "/public")]
     public string $image;
     
+    #[Image(requestField: "profile", dir: "/public", required: false)]
+    public string $profile;
+    
     public function getImageFilename(): string
     {
         return $this->image;
+    }
+    
+    public function getProfileFilename(): string
+    {
+        return $this->profile;
     }
 }
 ```
@@ -23,7 +31,7 @@ $product = new Product();
 File::upload($product, [
         new FileType([Type::JPEG]),
         new FileSize(2, Size::MB)
-]); 
+]);
 
 echo $product->getImageFilename();
 ```
@@ -72,6 +80,23 @@ Validates if the dimensions of the images are not bigger than specified
 ```php
 new Dimension(200, 200)
 ```
+
+### Specific file validation
+
+This shows you how you can target a group of validations into a specific field in your entity.
+```php
+$profileValidation = new RequestFieldValidations("profile", [
+    new Dimension(200, 200)
+]);
+
+File::upload($product, [
+    new FileType([Type::PNG, Type::JPEG, Type::GIF]),
+    new FileSize(2, Size::MB),
+    $profileValidation,
+])
+```
+
+```php
 
 -----
 Keep in touch with me on [Twitter](https://twitter.com/slmdiar) or [LinkedIn](https://www.linkedin.com/in/diarselimi)
