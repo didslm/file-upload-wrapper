@@ -9,7 +9,7 @@ use Didslm\FileUpload\Validation\iValidator;
 use Didslm\FileUpload\service\TypeAttributesCollection;
 use Psr\Http\Message\UploadedFileInterface;
 
-final class File
+class File
 {
     private const DEFAULT_FILE_PREFIX = 'file_';
     private string $generatedName;
@@ -31,11 +31,11 @@ final class File
         $uploadedFiles->validate($typesCollection->getRequiredFields());
 
         
-        foreach($uploadedFiles as $field => $uploadedFile) {
-            $uploadedFile = array_pop($uploadedFile);
+        foreach($uploadedFiles as $uploadedFile) {
 
-            $type = $typesCollection->getTypeByKey($field);
+            $field = $uploadedFiles->getField($uploadedFile);
             $property = $typesCollection->getPropertyByKey($field);
+            $type = $typesCollection->getTypeByKey($field);
 
             if ($type === null) {
                 continue;

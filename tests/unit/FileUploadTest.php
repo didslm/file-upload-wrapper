@@ -57,7 +57,7 @@ class FileUploadTest extends TestCase
         $product = new Product();
 
         $this->expectException(MissingFileException::class);
-        $this->expectExceptionMessage('Missing required file.');
+        $this->expectExceptionMessage('Missing file for field: article_image');
 
         File::upload($product, [
             new FileType([Type::JPEG])
