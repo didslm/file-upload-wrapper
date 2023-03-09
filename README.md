@@ -85,14 +85,14 @@ new Dimension(200, 200)
 
 This shows you how you can target a group of validations into a specific field in your entity.
 ```php
-$profileValidation = new RequestFieldValidations("profile", [
+$profileValidations = new FieldValidations("profile", [
     new Dimension(200, 200)
 ]);
 
 File::upload($product, [
     new FileType([Type::PNG, Type::JPEG, Type::GIF]),
     new FileSize(2, Size::MB),
-    $profileValidation,
+    $profileValidations,
 ])
 ```
 

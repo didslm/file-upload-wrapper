@@ -2,8 +2,8 @@
 
 namespace Didslm\FileUpload\Factory;
 
-use Didslm\FileUpload\service\UploadedFile;
-use Didslm\FileUpload\service\UploadedFileCollection;
+use Didslm\FileUpload\UploadedFile;
+use Didslm\FileUpload\UploadedFileCollection;
 use Psr\Http\Message\UploadedFileInterface;
 
 class UploadedFilesFactory

@@ -1,6 +1,6 @@
 <?php
 
-namespace Didslm\FileUpload\service;
+namespace Didslm\FileUpload;
 
 use Didslm\FileUpload\Attribute\TypeInterface;
 

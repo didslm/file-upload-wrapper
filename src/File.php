@@ -5,10 +5,9 @@ namespace Didslm\FileUpload;
 use Didslm\FileUpload\Exception\MissingFileException;
 use Didslm\FileUpload\Exception\ValidationException;
 use Didslm\FileUpload\Factory\UploadedFilesFactory;
-use Didslm\FileUpload\service\UploadedFile;
 use Didslm\FileUpload\Validation\iFieldValidator;
 use Didslm\FileUpload\Validation\iValidator;
-use Didslm\FileUpload\service\TypeAttributesCollection;
+use Didslm\FileUpload\Attribute\TypeAttributesCollection;
 use Psr\Http\Message\UploadedFileInterface;
 
 class File
@@ -25,7 +24,7 @@ class File
      * @throws MissingFileException
      * @throws ValidationException
      */
-    public static function upload(object &$obj, array|iValidator|null $checkers = []): void
+    public static function upload(object &$obj, array|iValidator|null $validators = []): void
     {
         $typesCollection = TypeAttributesCollection::createFromObject($obj);
         $uploadedFiles = UploadedFilesFactory::create($_FILES);
@@ -48,7 +47,7 @@ class File
                 $uploadedFile
             );
 
-            $file->validate($field, $checkers);
+            $file->validate($field, $validators);
 
             if ($file->uploadDirExists() === false) {
                 $file->createDir();

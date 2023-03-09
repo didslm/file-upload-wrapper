@@ -14,7 +14,7 @@ use Didslm\FileUpload\Tests\unit\entity\Product;
 use Didslm\FileUpload\Tests\unit\entity\Profile;
 use Didslm\FileUpload\Tests\unit\entity\Social;
 use Didslm\FileUpload\Type;
-use Didslm\FileUpload\Validation\RequestFieldValidations;
+use Didslm\FileUpload\Validation\FieldValidations;
 use PHPUnit\Framework\TestCase;
 
 class FileUploadTest extends TestCase
@@ -72,7 +72,7 @@ class FileUploadTest extends TestCase
 
         $profile = new Profile();
 
-        $imageValidations = new RequestFieldValidations(
+        $imageValidations = new FieldValidations(
             'cover',
             [
                 new FileType([Type::JPEG]),

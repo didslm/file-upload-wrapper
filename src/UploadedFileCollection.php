@@ -1,6 +1,6 @@
 <?php
 
-namespace Didslm\FileUpload\service;
+namespace Didslm\FileUpload;
 
 use Didslm\FileUpload\Exception\MissingFileException;
 use Psr\Http\Message\UploadedFileInterface;

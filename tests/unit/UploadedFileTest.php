@@ -2,7 +2,7 @@
 
 namespace Didslm\FileUpload\Tests\unit;
 
-use Didslm\FileUpload\service\UploadedFile;
+use Didslm\FileUpload\UploadedFile;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\StreamInterface;
 

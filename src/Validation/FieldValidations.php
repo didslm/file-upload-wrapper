@@ -4,7 +4,7 @@ namespace Didslm\FileUpload\Validation;
 
 use Psr\Http\Message\UploadedFileInterface;
 
-class RequestFieldValidations implements iFieldValidator
+class FieldValidations implements iFieldValidator
 {
     public function __construct(private string $requestField, private array $validations){
         if ($this->requestField === '') {

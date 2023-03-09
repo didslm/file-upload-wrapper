@@ -1,6 +1,6 @@
 <?php
 
-namespace Didslm\FileUpload\service;
+namespace Didslm\FileUpload;
 
 use Didslm\FileUpload\Stream;
 use Psr\Http\Message\UploadedFileInterface;
@@ -42,7 +42,7 @@ class UploadedFile implements UploadedFileInterface
         if ($this->error !== UPLOAD_ERR_OK) {
             throw new \RuntimeException(self::ERRORS[$this->error]);
         }
-
+        
 //        if (!is_uploaded_file($this->tmpName)) {
 //            throw new \RuntimeException("The file $this->tmpName is not an uploaded file.");
 //        }

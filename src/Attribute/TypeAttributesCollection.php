@@ -1,9 +1,8 @@
 <?php
 
-namespace Didslm\FileUpload\service;
+namespace Didslm\FileUpload\Attribute;
 
-use Didslm\FileUpload\Attribute\TypeInterface;
-use Exception;
+use Didslm\FileUpload\RequestFileType;
 
 class TypeAttributesCollection implements \IteratorAggregate
 {

@@ -2,7 +2,7 @@
 
 namespace Didslm\FileUpload\Tests\unit;
 
-use Didslm\FileUpload\{Factory\StreamFactory, File, service\UploadedFile, Stream, Type};
+use Didslm\FileUpload\{Factory\StreamFactory, File, UploadedFile, Stream, Type};
 use Didslm\FileUpload\Tests\unit\entity\CvProfile;
 use Didslm\FileUpload\Validation\FileType;
 use PHPUnit\Framework\TestCase;
