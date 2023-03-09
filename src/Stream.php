@@ -11,10 +11,14 @@ class Stream implements StreamInterface
      */
     private $stream;
 
-    public function __construct(private string $path, private string $mode = 'r')
+    public function __construct(private string $path, private string $mode = 'a')
     {
         $this->stream = fopen($path, $mode);
+        if ($this->stream === false) {
+            throw new \RuntimeException('Could not open stream for path: ' . $path);
+        }
     }
+
     public function __toString(): string
     {
         return (string) $this->stream;
@@ -25,7 +29,7 @@ class Stream implements StreamInterface
         $this->stream = null;
     }
 
-    public function detach()
+    public function detach(): void
     {
         $this->stream = null;
     }
@@ -45,7 +49,7 @@ class Stream implements StreamInterface
         return feof($this->stream);
     }
 
-    public function isSeekable()
+    public function isSeekable(): bool
     {
         return true;
     }
@@ -70,9 +74,14 @@ class Stream implements StreamInterface
         return fwrite($this->stream, $string);
     }
 
+    //check if the stream is readable
     public function isReadable(): bool
     {
-        return in_array($this->mode, ['r', 'r+']);
+        if ($this->stream) {
+            return in_array($this->mode, ['r', 'r+', 'w+', 'a', 'a+', 'x', 'x+', 'c', 'c+']);
+        }
+
+        return false;
     }
 
     public function read($length): string
@@ -82,7 +91,11 @@ class Stream implements StreamInterface
 
     public function getContents(): string
     {
-        return stream_get_contents($this->stream);
+        if ($this->isReadable()) {
+            return stream_get_contents($this->stream);
+        }
+
+        throw new \RuntimeException('Stream is not readable');
     }
 
     public function getMetadata($key = null): array|string|null

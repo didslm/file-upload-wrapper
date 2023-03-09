@@ -5,8 +5,9 @@ namespace Didslm\FileUpload;
 use Didslm\FileUpload\Exception\MissingFileException;
 use Didslm\FileUpload\Exception\ValidationException;
 use Didslm\FileUpload\Factory\UploadedFilesFactory;
+use Didslm\FileUpload\Validation\iFieldValidator;
 use Didslm\FileUpload\Validation\iValidator;
-use Didslm\FileUpload\service\TypeAttributesCollection;
+use Didslm\FileUpload\Attribute\TypeAttributesCollection;
 use Psr\Http\Message\UploadedFileInterface;
 
 class File
@@ -23,14 +24,14 @@ class File
      * @throws MissingFileException
      * @throws ValidationException
      */
-    public static function upload(object &$obj, ?array $checkers = []): void
+    public static function upload(object &$obj, array|iValidator|null $validators = []): void
     {
         $typesCollection = TypeAttributesCollection::createFromObject($obj);
         $uploadedFiles = UploadedFilesFactory::create($_FILES);
 
         $uploadedFiles->validate($typesCollection->getRequiredFields());
 
-        
+        /** @var UploadedFile $uploadedFile */
         foreach($uploadedFiles as $uploadedFile) {
 
             $field = $uploadedFiles->getField($uploadedFile);
@@ -46,13 +47,13 @@ class File
                 $uploadedFile
             );
 
-            $file->validate(...$checkers);
+            $file->validate($field, $validators);
 
             if ($file->uploadDirExists() === false) {
                 $file->createDir();
             }
 
-            $uploadedFile->moveTo($file->uploadDir . $file->generateName());
+            $uploadedFile->moveTo($file->uploadDir. $file->generateName());
 
             if (is_array($obj->{$property})) {
                 $obj->{$property}[] = $file->getGeneratedName();
@@ -70,11 +71,23 @@ class File
         }
     }
 
-    private function validate(iValidator... $checkers): void
+    private function validate(string $uploadedUnderName, iValidator|array|null $checkers): void
     {
+        if ($checkers === null) {
+            return;
+        }
+
+        if (is_array($checkers) === false) {
+            $checkers = [$checkers];
+        }
+
         foreach ($checkers as $check) {
-            if (!$check->isPassed($this->uploadedFile)) {
-                throw new ValidationException($check->getName(), $this->uploadedFile->getClientMediaType());
+            if ($check instanceof iFieldValidator && $uploadedUnderName !== $check->validateOnlyField()) {
+                continue;
+            }
+
+            if ($check->isPassed($this->uploadedFile) === false) {
+                throw new ValidationException($check->getName());
             }
         }
     }

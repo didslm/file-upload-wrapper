@@ -8,4 +8,5 @@ interface iValidator
 {
     public function isPassed(UploadedFileInterface $file): bool;
     public function getName(): string;
+
 }
