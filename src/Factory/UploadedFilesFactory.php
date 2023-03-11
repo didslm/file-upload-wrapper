@@ -3,41 +3,41 @@
 namespace Didslm\FileUpload\Factory;
 
 use Didslm\FileUpload\UploadedFile;
-use Didslm\FileUpload\UploadedFileCollection;
 use Psr\Http\Message\UploadedFileInterface;
 
 class UploadedFilesFactory
 {
     private function __construct(private array $files){}
     
-    public static function create(array $files): UploadedFileCollection
+    public static function create(array $files): array
     {
-        $uploadedFiles = new UploadedFileCollection();
         $factory = new self($files);
+        $uploadedFiles = [];
         
         foreach ($files as $key => $file) {
-            
+
             if ($factory->isMultiple($key)) {
                 $normalizedFiles = $factory->normalizeMultiple($key);
                 
                 for ($i=0; $i < count($normalizedFiles['name']); $i++) {
-                    
-                    $uploadedFiles->addFile(new UploadedFile(
+
+                    $uploadedFiles[] = new UploadedFile(
+                        $key,
                         $normalizedFiles['tmp_name'][$i],
                         $normalizedFiles['name'][$i],
                         $normalizedFiles['type'][$i],
                         $normalizedFiles['size'][$i],
                         (int) $normalizedFiles['error'][$i],
-                    ), $key);
+                    );
                 }
                 continue;
             }
 
-            $uploadedFiles->addFile($factory->createFile($file), $key);
+            $file['request_field'] = $key;
+            $uploadedFiles[] = $factory->createFile($file);
         }
 
         return $uploadedFiles;
-
     }
 
     private function isMultiple(string $key): bool
@@ -70,6 +70,7 @@ class UploadedFilesFactory
     private function createFile(array $file): UploadedFileInterface
     {
         return new UploadedFile(
+            $file['request_field'],
             $file['tmp_name'],
             $file['name'],
             $file['type'],

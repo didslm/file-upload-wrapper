@@ -3,14 +3,15 @@
 namespace Didslm\FileUpload\Validation;
 
 use Didslm\FileUpload\Exception\ValidationException;
-use Didslm\FileUpload\Type;
+
+use Didslm\FileUpload\File;
 use Psr\Http\Message\UploadedFileInterface;
 
-class FileType implements iValidator
+class FileType implements ValidatorInterface
 {
     const CHECKER_NAME = 'File Type';
 
-    public function __construct(private readonly array $acceptedTypes = Type::ALL){}
+    public function __construct(private readonly array $acceptedTypes = File::ALL){}
 
     public function isPassed(UploadedFileInterface $file): bool
     {

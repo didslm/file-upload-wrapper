@@ -2,8 +2,6 @@
 
 namespace Didslm\FileUpload;
 
-use Didslm\FileUpload\Stream;
-use Psr\Http\Message\UploadedFileInterface;
 use PSr\Http\Message\StreamInterface;
 
 class UploadedFile implements UploadedFileInterface
@@ -25,6 +23,7 @@ class UploadedFile implements UploadedFileInterface
     ];
     
     public function __construct(
+        private string $uploadedUnderFieldName,
         private ?string $tmpName,
         private ?string $name,
         private ?string $type,
@@ -70,5 +69,10 @@ class UploadedFile implements UploadedFileInterface
     public function getClientMediaType(): ?string
     {
         return $this->type;
+    }
+
+    public function getRequestField(): string
+    {
+        return $this->uploadedUnderFieldName;
     }
 }

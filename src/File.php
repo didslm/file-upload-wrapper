@@ -2,108 +2,83 @@
 
 namespace Didslm\FileUpload;
 
-use Didslm\FileUpload\Exception\MissingFileException;
-use Didslm\FileUpload\Exception\ValidationException;
-use Didslm\FileUpload\Factory\UploadedFilesFactory;
-use Didslm\FileUpload\Validation\iFieldValidator;
-use Didslm\FileUpload\Validation\iValidator;
-use Didslm\FileUpload\Attribute\TypeAttributesCollection;
-use Psr\Http\Message\UploadedFileInterface;
-
 class File
 {
-    private const DEFAULT_FILE_PREFIX = 'file_';
-    private string $generatedName;
+    public const KB = 1;
+    public const MB = 2;
 
-    protected function __construct(
-        private string $uploadDir,
-        private UploadedFileInterface $uploadedFile
-    ){}
+    public const ALL_SIZES = [
+        self::KB => 1000,
+        self::MB => 1000000,
+    ];
 
-    /**
-     * @throws MissingFileException
-     * @throws ValidationException
-     */
-    public static function upload(object &$obj, array|iValidator|null $validators = []): void
-    {
-        $typesCollection = TypeAttributesCollection::createFromObject($obj);
-        $uploadedFiles = UploadedFilesFactory::create($_FILES);
+    //image types
+    public const JPEG = 'image/jpeg';
+    public const PNG = 'image/png';
+    public const GIF = 'image/gif';
 
-        $uploadedFiles->validate($typesCollection->getRequiredFields());
+    public const IMAGES = [
+        self::JPEG,
+        self::PNG,
+        self::GIF,
+    ];
 
-        /** @var UploadedFile $uploadedFile */
-        foreach($uploadedFiles as $uploadedFile) {
+    //document types
+    public const PDF = 'application/pdf';
+    public const DOC = 'application/msword';
+    public const DOCX = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+    public const XLS = 'application/vnd.ms-excel';
+    public const XLSX = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+    public const PPT = 'application/vnd.ms-powerpoint';
+    public const PPTX = 'application/vnd.openxmlformats-officedocument.presentationml.presentation';
 
-            $field = $uploadedFiles->getField($uploadedFile);
-            $property = $typesCollection->getPropertyByKey($field);
-            $type = $typesCollection->getTypeByKey($field);
+    public const DOCUMENTS = [
+        self::PDF,
+        self::DOC,
+        self::DOCX,
+        self::XLS,
+        self::XLSX,
+        self::PPT,
+        self::PPTX,
+    ];
 
-            if ($type === null) {
-                continue;
-            }
+    //all video types
+    public const MP4 = 'video/mp4';
+    public const WEBM = 'video/webm';
+    public const OGG = 'video/ogg';
+    public const AVI = 'video/x-msvideo';
+    public const WMV = 'video/x-ms-wmv';
+    public const FLV = 'video/x-flv';
+    public const MOV = 'video/quicktime';
 
-            $file = new self(
-                $_SERVER['DOCUMENT_ROOT'] . '/' . trim($type->getDir(), '/') . '/',
-                $uploadedFile
-            );
+    public const VIDEOS = [
+        self::MP4,
+        self::WEBM,
+        self::OGG,
+        self::AVI,
+        self::WMV,
+        self::FLV,
+        self::MOV,
+    ];
 
-            $file->validate($field, $validators);
+    public const ALL = [
+        self::JPEG => 'jpg',
+        self::PNG => 'png',
+        self::GIF => 'gif',
+        self::PDF => 'pdf',
+        self::DOC => 'doc',
+        self::DOCX => 'docx',
+        self::XLS => 'xls',
+        self::XLSX => 'xlsx',
+        self::PPT => 'ppt',
+        self::PPTX => 'pptx',
+        self::MP4 => 'mp4',
+        self::WEBM => 'webm',
+        self::OGG => 'ogg',
+        self::AVI => 'avi',
+        self::WMV => 'wmv',
+        self::FLV => 'flv',
+        self::MOV => 'mov',
+    ];
 
-            if ($file->uploadDirExists() === false) {
-                $file->createDir();
-            }
-
-            $uploadedFile->moveTo($file->uploadDir. $file->generateName());
-
-            if (is_array($obj->{$property})) {
-                $obj->{$property}[] = $file->getGeneratedName();
-                continue;
-            }
-
-            $obj->{$property} = $file->getGeneratedName();
-        }
-    }
-
-    private function createDir(): void
-    {
-        if (!is_dir($this->uploadDir)) {
-            mkdir($this->uploadDir, 0777, true);
-        }
-    }
-
-    private function validate(string $uploadedUnderName, iValidator|array|null $checkers): void
-    {
-        if ($checkers === null) {
-            return;
-        }
-
-        if (is_array($checkers) === false) {
-            $checkers = [$checkers];
-        }
-
-        foreach ($checkers as $check) {
-            if ($check instanceof iFieldValidator && $uploadedUnderName !== $check->validateOnlyField()) {
-                continue;
-            }
-
-            if ($check->isPassed($this->uploadedFile) === false) {
-                throw new ValidationException($check->getName());
-            }
-        }
-    }
-
-    private function getGeneratedName(): string
-    {
-        return $this->generatedName ?? $this->generateName();
-    }
-    private function generateName(): string
-    {
-        $ext = Type::ALL[$this->uploadedFile->getClientMediaType()];
-        return $this->generatedName = md5(uniqid(self::DEFAULT_FILE_PREFIX, true)).'.'.$ext;
-    }
-
-    private function uploadDirExists(): bool
-    {
-        return is_dir($this->uploadDir);
-    }
 }
