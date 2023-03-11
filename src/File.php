@@ -14,11 +14,13 @@ class File
 
     //image types
     public const JPEG = 'image/jpeg';
+    public const JPG = 'image/jpg';
     public const PNG = 'image/png';
     public const GIF = 'image/gif';
 
     public const IMAGES = [
         self::JPEG,
+        self::JPG,
         self::PNG,
         self::GIF,
     ];
@@ -63,6 +65,7 @@ class File
 
     public const ALL = [
         self::JPEG => 'jpg',
+        self::JPG => 'jpg',
         self::PNG => 'png',
         self::GIF => 'gif',
         self::PDF => 'pdf',
