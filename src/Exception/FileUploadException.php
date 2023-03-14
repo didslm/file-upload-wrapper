@@ -2,7 +2,7 @@
 
 namespace Didslm\FileUpload\Exception;
 
-abstract class FileUploadException extends \Exception
+abstract class FileUploadException extends \RuntimeException
 {
     private ?FileUploadException $previous;
 

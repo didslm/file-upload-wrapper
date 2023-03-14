@@ -3,6 +3,8 @@
 namespace Didslm\FileUpload;
 
 use Psr\Http\Message\StreamInterface;
+use Didslm\FileUpload\Exception\InvalidFileException;
+use Didslm\FileUpload\Exception\FileNotReadableException;
 
 class Stream implements StreamInterface
 {
@@ -15,7 +17,7 @@ class Stream implements StreamInterface
     {
         $this->stream = fopen($path, $mode);
         if ($this->stream === false) {
-            throw new \RuntimeException('Could not open stream for path: ' . $path);
+            throw new InvalidFileException($path);
         }
     }
 
@@ -95,7 +97,7 @@ class Stream implements StreamInterface
             return stream_get_contents($this->stream);
         }
 
-        throw new \RuntimeException('Stream is not readable');
+        throw new FileNotReadableException('Stream is not readable');
     }
 
     public function getMetadata($key = null): array|string|null

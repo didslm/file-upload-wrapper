@@ -141,4 +141,34 @@ class UploaderTest extends TestCase
            new FileSize(10) //this will test all the uploaded files and fail if one of them is bigger than 5MB
         ]);
     }
+
+    public function testShouldThrowExceptionWhenMoreThanOneAttributeIsDefined(): void
+    {
+        $obj = new class() {
+
+            #[Image('image', 'uploads')]
+            #[Video('image', dir: 'uploads')]
+            private string $image;
+
+        };
+
+        $_FILES = [
+            'image' => [
+                'name' => 'test.png',
+                'type' => 'image/png',
+                'tmp_name' => tempnam(sys_get_temp_dir(), 'test_'),
+                'error' => 0,
+                'size' => 12345
+            ],
+        ];
+
+        $this->expectException(\Didslm\FileUpload\Exception\TooManyAttributesException::class);
+        $this->expectExceptionMessage('Too many attributes defined for field: image');
+
+        File::upload($obj, [
+           new FileSize(10) //this will test all the uploaded files and fail if one of them is bigger than 5MB
+        ]);
+    }
+
+    
 }

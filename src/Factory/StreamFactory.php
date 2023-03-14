@@ -14,6 +14,6 @@ class StreamFactory
 
     public function createStream(string $fileName): StreamInterface
     {
-        return new Stream($fileName, 'r+w');
+        return new Stream($fileName, 'r');
     }
 }

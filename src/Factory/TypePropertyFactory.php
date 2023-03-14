@@ -4,6 +4,7 @@ namespace Didslm\FileUpload\Factory;
 
 use Didslm\FileUpload\Attribute\TypeInterface;
 use Didslm\FileUpload\Attribute\TypePropertyDecorated;
+use Didslm\FileUpload\Exception\TooManyAttributesException;
 
 class TypePropertyFactory
 {
@@ -15,7 +16,7 @@ class TypePropertyFactory
             $property->setValue($obj, $property->getType()->getName() === 'array' ? [] : '');
 
             if (count($attributes) > 1) {
-                throw new \Exception('You can only have one Type attribute per property');
+                throw new TooManyAttributesException($property->getName());
             }
 
             if (count($attributes) === 1) {

@@ -2,6 +2,7 @@
 
 namespace Didslm\FileUpload;
 
+use Didslm\FileUpload\Exception\UploadedFileException;
 use PSr\Http\Message\StreamInterface;
 
 class UploadedFile implements UploadedFileInterface
@@ -39,15 +40,15 @@ class UploadedFile implements UploadedFileInterface
     public function moveTo($targetPath): void
     {
         if ($this->error !== UPLOAD_ERR_OK) {
-            throw new \RuntimeException(self::ERRORS[$this->error]);
+            throw new UploadedFileException(self::ERRORS[$this->error]);
         }
         
-//        if (!is_uploaded_file($this->tmpName)) {
-//            throw new \RuntimeException("The file $this->tmpName is not an uploaded file.");
-//        }
+    //    if (!is_uploaded_file($this->tmpName)) {
+    //        throw new UploadedFileException("The file {$this->tmpName} is not an uploaded file.");
+    //    }
 
         if (!copy($this->tmpName, $targetPath)) {
-            throw new \RuntimeException("The file $this->tmpName could not be moved to $targetPath.");
+            throw new UploadedFileException("The file $this->tmpName could not be moved to $targetPath.");
         }
     }
 
