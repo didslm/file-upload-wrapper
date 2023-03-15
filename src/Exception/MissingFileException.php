@@ -2,7 +2,12 @@
 
 namespace Didslm\FileUpload\Exception;
 
-class MissingFileException extends \Exception
+class MissingFileException extends FileUploadException
 {
-    protected $message = 'Missing required file.';
+    public function __construct(string $filename)
+    {
+        $message = "File not found: $filename";
+        parent::__construct($message);
+    }
+
 }

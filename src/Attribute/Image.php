@@ -7,7 +7,7 @@ use Attribute;
 #[Attribute(Attribute::TARGET_PROPERTY)]
 class Image implements TypeInterface
 {
-    public function __construct(public string $requestField, public string $dir, public bool $required = true){}
+    public function __construct(public string $requestField, public string $dir = self::DEFAULT_DIR, public bool $required = true){}
 
     public function getDir(): string
     {

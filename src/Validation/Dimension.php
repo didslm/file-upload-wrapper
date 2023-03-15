@@ -4,6 +4,7 @@ namespace Didslm\FileUpload\Validation;
 
 use Didslm\FileUpload\Exception\ValidationException;
 use Psr\Http\Message\UploadedFileInterface;
+
 class Dimension implements ValidatorInterface
 {
     const CHECKER_NAME = 'Image Dimension';

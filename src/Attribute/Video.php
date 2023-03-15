@@ -8,7 +8,7 @@ class Video implements TypeInterface
 {
     public function __construct(
         public string $requestField,
-        public string $dir,
+        public string $dir = self::DEFAULT_DIR,
         public bool $required = true
     ){}
 
