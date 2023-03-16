@@ -16,11 +16,6 @@ class TypePropertyDecorated implements TypeInterface {
         return $this->type->getRequestField();
     }
 
-    public function isRequired(): bool
-    {
-        return $this->type->isRequired();
-    }
-
     public function getProperty(): string
     {
         return $this->property;

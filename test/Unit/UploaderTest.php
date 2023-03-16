@@ -111,37 +111,6 @@ class UploaderTest extends TestCase
 
     }
 
-    public function testShouldFailWhenRequiredFilesAreNotProvided(): void
-    {
-        $obj = new class() {
-
-            #[Image('image', 'uploads')]
-            private string $image;
-            #[Video('video', dir: 'uploads')]
-            private string $video;
-            #[Image('gallery', dir: 'uploads', required: false)]
-            private array $gallery;
-
-        };
-
-        $_FILES = [
-            'image' => [
-                'name' => 'test.png',
-                'type' => 'image/png',
-                'tmp_name' => tempnam(sys_get_temp_dir(), 'test_'),
-                'error' => 0,
-                'size' => 12345
-            ],
-        ];
-
-        $this->expectException(MissingFileException::class);
-        $this->expectExceptionMessage('Missing file for field: video');
-
-        File::upload($obj, [
-           new FileSize(10) //this will test all the uploaded files and fail if one of them is bigger than 5MB
-        ]);
-    }
-
     public function testShouldThrowExceptionWhenMoreThanOneAttributeIsDefined(): void
     {
         $obj = new class() {

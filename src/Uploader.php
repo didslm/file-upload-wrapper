@@ -50,7 +50,6 @@ class Uploader
     private static function validate(array $validations): void
     {
         $instance = self::$instance;
-        $requiredFields = array_filter($instance->types, fn($type) => $type->isRequired());
 
         foreach ($instance->uploadedFiles as $key => $uploadedFile) {
             $type = self::$instance->types[$uploadedFile->getRequestField()] ?? null;
@@ -59,7 +58,6 @@ class Uploader
                 unset($instance->uploadedFiles[$key]); //we don't need it if it's not declared in the object
                 continue;
             }
-            unset($requiredFields[$uploadedFile->getRequestField()]);
 
             foreach ($validations as $validation) {
 
@@ -69,10 +67,6 @@ class Uploader
 
                 $validation->isPassed($uploadedFile);
             }
-        }
-
-        foreach ($requiredFields as $requiredField) {
-            throw new MissingFileException(sprintf('Missing file for field: %s', $requiredField->getRequestField()));
         }
     }
 
