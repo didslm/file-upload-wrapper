@@ -38,7 +38,7 @@ class Product {
     #[Image(requestField: "request_field", dir: "/public")]
     private string $image;
     
-    #[Image(requestField: "profile_field", dir: "/public", required: false)]
+    #[Image(requestField: "profile_field", dir: "/public")]
     private string $profile;
     
     // ...
@@ -66,7 +66,7 @@ class Product {
     #[Image(requestField: "request_field", dir: "/public")]
     private string $image;
     
-    #[Image(requestField: "profile_field", dir: "/public", required: false)]
+    #[Image(requestField: "profile_field", dir: "/public")]
     private string $profile;
     
     public function getImageFilename(): string
