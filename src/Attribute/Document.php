@@ -9,8 +9,7 @@ class Document implements TypeInterface
 {
     public function __construct(
         public string $requestField, 
-        public string $dir = self::DEFAULT_DIR, 
-        public bool $required = true
+        public string $dir = self::DEFAULT_DIR
     ){}
 
     public function getDir(): string
@@ -24,8 +23,4 @@ class Document implements TypeInterface
         return $this->requestField;
     }
 
-    public function isRequired(): bool
-    {
-        return $this->required;
-    }
 }
