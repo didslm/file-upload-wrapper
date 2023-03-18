@@ -5,7 +5,7 @@ namespace Didslm\FileUpload\Factory;
 use Didslm\FileUpload\Reflection\EntityReflector;
 use Didslm\FileUpload\UploaderImpl;
 use Didslm\FileUpload\UploaderInterface;
-use Didslm\FileUpload\ValidationImpl;
+use Didslm\FileUpload\Validation\ValidationImpl;
 
 class UploaderFactory 
 {

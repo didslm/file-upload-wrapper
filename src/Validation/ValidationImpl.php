@@ -1,7 +1,8 @@
 <?php
 
-namespace Didslm\FileUpload;
+namespace Didslm\FileUpload\Validation;
 
+use Didslm\FileUpload\UploadedFileInterface;
 use Didslm\FileUpload\Validation\FieldValidatorInterface;
 
 class ValidationImpl implements ValidationInterface

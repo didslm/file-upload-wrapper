@@ -1,6 +1,6 @@
 <?php
 
-namespace Didslm\FileUpload;
+namespace Didslm\FileUpload\Validation;
 
 interface ValidationInterface
 {
