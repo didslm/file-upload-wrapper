@@ -21,6 +21,7 @@ composer require didslm/file-upload-wrapper
 
 ```php
 use Didslm\FileUpload\Uploader;
+use Didslm\FileUpload\UploaderInterface;
 use Didslm\FileUpload\File;
 use Didslm\FileUpload\Validation\FileSize;
 use Didslm\FileUpload\Validation\FileType;
@@ -175,6 +176,35 @@ Uploader::upload($product, [
 ```
 
 In the example above, we are specifying a set of validation checks that apply to the profile field in the Product entity. These checks will only be applied to the profile image uploaded by the user.
+
+# Frameworks Implementation 
+
+The library is framework agnostic, which means that you can use it with any framework.
+
+The following sections show how to configure the library in some of the most popular frameworks.
+
+## Symfony 
+
+In your Symfony app you can easily configure the library in your `services.yaml` file:
+
+```yaml
+services:
+    Didslm\FileUpload\:
+        resource: '../vendor/didslm/file-upload-wrapper/src/*'
+```
+
+## Laravel
+
+In your Laravel app you can easily configure the library in your `AppServiceProvider.php` file:
+
+```php
+public function register()
+{
+    $this->app->bind(UploaderInterface::class, function (){
+         return UploaderFactory::create();
+    });
+}
+```
 
 -----
 Handling file uploads can be a complicated and error-prone task, but with this library, you can simplify the process and focus on building the features that matter. If you have any questions or feedback, feel free to reach out to the author on [Twitter](https://twitter.com/slmdiar) or [LinkedIn](https://linkedin.com/in/diarselimi).
