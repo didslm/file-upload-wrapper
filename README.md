@@ -32,7 +32,7 @@ use Didslm\FileUpload\Attributes\Document;
 use Didslm\FileUpload\Exceptions\FileUploadException;
 ```
 
-3. Use the upload() method to handle file uploads for your entity:
+3. Use the `upload()` method to handle file uploads for your entity:
 
 ```php
 class Product {
@@ -53,6 +53,27 @@ Uploader::upload($product, [
 ]);
 
 ```
+
+4. The same exmaple you can you via Dependency Injection:
+
+```php
+class ProductController {
+    public function __construct(private UploaderInterface $uploader){}
+    
+    public function upload(Request $request)
+    {
+        $product = new Product();
+        
+        $this->uploader->upload($product, [
+            new FileType([File::IMAGES]),
+            new FileSize(2, File::MB)
+        ]);
+    }
+}
+```
+
+At the end of this document you can see how to configure in Laravel or Symfony.
+
 ----
 
 # Examples
