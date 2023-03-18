@@ -28,4 +28,9 @@ class TypePropertyFactory
 
         return $types;
     }
+
+    public function createFromEntity(object $entity): array
+    {
+        return self::create($entity);
+    }
 }
