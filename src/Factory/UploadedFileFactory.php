@@ -33,9 +33,9 @@ class UploadedFileFactory
                 ];
 
                 if (is_array($nestedFile)) {
-                    $uploadedFiles = array_merge($uploadedFiles, self::processFileArray($key . "[$nestedKey]", $nestedFileData));
+                    $uploadedFiles = array_merge($uploadedFiles, self::processFileArray($key, $nestedFileData));
                 } else {
-                    $uploadedFiles[] = self::createSingleFile($key . "[$nestedKey]", $nestedFileData);
+                    $uploadedFiles[] = self::createSingleFile($key, $nestedFileData);
                 }
             }
         } else {
