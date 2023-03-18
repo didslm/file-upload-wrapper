@@ -54,7 +54,7 @@ Uploader::upload($product, [
 
 ```
 
-4. The same exmaple you can you via Dependency Injection:
+4. The same exmaple you can do via Dependency Injection:
 
 ```php
 class ProductController {
