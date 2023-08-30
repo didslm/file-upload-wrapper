@@ -18,6 +18,10 @@ class UploaderTest extends TestCase
         $this->dir = dirname(__DIR__, 2) . '/uploads/';
         parent::setUp();
         $_SERVER['DOCUMENT_ROOT'] = dirname(__DIR__, 2);
+        $directory = dirname($this->dir);
+        if (!is_dir($directory)) {
+            mkdir($directory, 0755, true);
+        }
     }
 
     protected function tearDown(): void
@@ -34,6 +38,8 @@ class UploaderTest extends TestCase
             #[Image('image', 'uploads')]
             #[Video('image', dir: 'uploads')]
             private string $image;
+
+            public string $name = 'test';
 
         };
 
@@ -53,6 +59,28 @@ class UploaderTest extends TestCase
         File::upload($obj, [
            new FileSize(10) //this will test all the uploaded files and fail if one of them is bigger than 5MB
         ]);
+    }
+
+    public function testFileUploadShouldNotCleanUpClass(): void
+    {
+        $obj = new class() {
+
+            #[Image('image', 'uploads')]
+            private string $image;
+
+            public string $name = 'test';
+
+            public function image(): string
+            {
+                return $this->image;
+            }
+        };
+
+        File::upload($obj, [
+            new FileSize(10)
+        ]);
+
+        self::assertEquals('test', $obj->name);
     }
 
     

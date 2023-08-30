@@ -43,12 +43,13 @@ class UploadedFile implements UploadedFileInterface
             throw new UploadedFileException(self::ERRORS[$this->error]);
         }
         
-    //    if (!is_uploaded_file($this->tmpName)) {
-    //        throw new UploadedFileException("The file {$this->tmpName} is not an uploaded file.");
-    //    }
+        if (!is_uploaded_file($this->tmpName)) {
+            throw new UploadedFileException("The file {$this->tmpName} is not an uploaded file.");
+        }
 
         if (!copy($this->tmpName, $targetPath)) {
-            throw new UploadedFileException("The file $this->tmpName could not be moved to $targetPath.");
+            $error = error_get_last();
+            throw new UploadedFileException("Failed to move {$this->tmpName} to {$targetPath}. Error: " . $error['message']);
         }
     }
 

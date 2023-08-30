@@ -2,7 +2,9 @@
 
 namespace Didslm\FileUpload;
 
-interface UploadedFileInterface extends \Psr\Http\Message\UploadedFileInterface
+use Psr\Http\Message\UploadedFileInterface as PsrUploadedFileInterface;
+
+interface UploadedFileInterface extends PsrUploadedFileInterface
 {
     public function getRequestField(): string;
 }
