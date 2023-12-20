@@ -16,11 +16,25 @@ class FileType implements ValidatorInterface
     public function isPassed(UploadedFileInterface $file): bool
     {
 
-        if (!in_array($file->getClientMediaType(), $this->acceptedTypes, true)) {
+        if (!in_array($this->getMimeTypeFromContent($file), $this->acceptedTypes, true)) {
             throw new ValidationException(sprintf('File type (%s) is not allowed. Allowed types are %s.',$file->getClientMediaType(), implode(', ', $this->acceptedTypes)));
         }
 
         return true;
+    }
+
+    private function getMimeTypeFromContent(UploadedFileInterface $file): string
+    {
+        $stream = $file->getStream();
+        $stream->rewind();
+        $content = $stream->read(1024);
+        $stream->close();
+
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        $mimeType = finfo_buffer($finfo, $content);
+        finfo_close($finfo);
+
+        return $mimeType;
     }
 
     public function getName(): string
